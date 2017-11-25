@@ -36,6 +36,7 @@ class Profil extends Component {
             this.state.loading ? <div>Loading...</div>
               :
               <div>
+                !!!
                 <img className='profilPict' src={this.props.user.photoURL} alt={this.props.user.displayName} />
                 <h2>{this.props.user.displayName}</h2>
                 {/* <p>{JSON.stringify(this.props.user.uid, null,4)}</p> */}
