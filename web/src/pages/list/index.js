@@ -48,16 +48,18 @@ class List extends Component {
     let templateRef = _const.fbDb.ref().child('templates/'+this.uid);
     templateRef.once('value').then(templateSnap => {
       let _templateData = templateSnap.val();
+      console.log('_templateData', _templateData);
+      if(_templateData!= null) {
+        let firstKey = Object.keys(_templateData)[0];
+        let firstDayType = _templateData[firstKey];
 
-      let firstKey = Object.keys(_templateData)[0];
-      let firstDayType = _templateData[firstKey];
-
-      let dayList = {};
-      dayList[this.state.dateString] = {
-        str_date:this.state.theDate,
-        data:Object.assign({}, firstDayType)
-      };
-      this.listsRef.update(dayList);
+        let dayList = {};
+        dayList[this.state.dateString] = {
+          str_date:this.state.theDate,
+          data:Object.assign({}, firstDayType)
+        };
+        this.listsRef.update(dayList);
+      }
     });
     
   }

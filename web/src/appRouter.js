@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route, BrowserRouter, Redirect, Switch } from 'react-router-dom'
-import * as firebase from 'firebase';
+//import * as firebase from 'firebase';
 
 import _const from './const';
 
@@ -13,8 +13,7 @@ import Login from './pages/login'
 import List from './pages/list'
 import Templates from './pages/templates'
 import Profil from './pages/profil'
-
-
+import AddFamillyMember from './pages/addFamillyMember'
 
 
 class AppRouter extends Component {
@@ -34,14 +33,7 @@ class AppRouter extends Component {
         this.setState({
           user: user,
           loading: false,
-        }, () => {
-          let btnLogout = document.getElementById('logoutBtn');
-          if (btnLogout) {
-            btnLogout.addEventListener('click', e => {
-              firebase.auth().signOut();
-            });
-          }
-        })
+        });
 
 
       } else {
@@ -69,6 +61,7 @@ class AppRouter extends Component {
               <PrivateRoute user={this.state.user} path="/list" component={List} />
               <PrivateRoute user={this.state.user} path="/templates" component={Templates} />
               <PrivateRoute user={this.state.user} path="/profil" component={Profil} />
+              <PrivateRoute user={this.state.user} path="/addFamillyMember" component={AddFamillyMember} />
 
               <Route render={() => <h3>Not found...</h3>} />
 

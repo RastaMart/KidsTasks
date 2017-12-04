@@ -10,13 +10,15 @@ import firebaseui from 'firebaseui';
       databaseURL: "https://kidstasks-649d6.firebaseio.com",
       projectId: "kidstasks-649d6",
       storageBucket: "kidstasks-649d6.appspot.com",
-      messagingSenderId: "419939611097"
+      messagingSenderId: "419939611097",
+      //domain:'http://localhost:3000',
+      domain:'http://192.168.1.11:3000',
     };
     firebase.initializeApp(config);
 
     // FirebaseUI config.
       var uiConfig = {
-        signInSuccessUrl: 'http://192.168.1.11:3000/list',
+        signInSuccessUrl: config.domain + '/list',
         signInOptions: [
           // Leave the lines as is for the providers you want to offer your users.
           firebase.auth.GoogleAuthProvider.PROVIDER_ID,
@@ -26,7 +28,7 @@ import firebaseui from 'firebaseui';
           firebase.auth.EmailAuthProvider.PROVIDER_ID,
         ],
         // Terms of service url.
-        tosUrl: 'http://192.168.1.11:3000/termOfService'
+        tosUrl: config.domain + '/termOfService'
       };
 
       // Initialize the FirebaseUI Widget using Firebase.
