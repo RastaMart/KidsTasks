@@ -140,7 +140,9 @@ class Profil extends Component {
           <p>Si tu es le premier de ta famille à utiliser l'app, crée une famille, sinon join la famille créé par un autre membre de ta famille.</p>
           <p>Veux-tu </p>
           <button onClick={this.createFamilly.bind(this, "parent")}>Créer une famille</button>
-          <button onClick={this.joinFamilly.bind(this, "child")}>Joindre une famille</button>
+          <Link to='/joinFamilly'>
+            <button>Joindre une famille</button>
+          </Link>
         </div>
       );
      }

@@ -4450,6 +4450,10 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
+"jsqr@git+https://github.com/cozmo/jsQR.git":
+  version "0.2.2"
+  resolved "git+https://github.com/cozmo/jsQR.git#397a6eb8f90752cf640cb4bb67ba6f86e3bb5d1f"
+
 jsx-ast-utils@^1.4.0:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/jsx-ast-utils/-/jsx-ast-utils-1.4.1.tgz#3867213e8dd79bf1e8f2300c0cfc1efb182c0df1"
@@ -6322,6 +6326,14 @@ react-qr-code@^0.1.2:
     prop-types "^15.5.10"
     qr.js "0.0.0"
 
+react-qr-reader@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/react-qr-reader/-/react-qr-reader-2.0.1.tgz#f7be785e8c880d7e68423fc129802994f70b6b58"
+  dependencies:
+    jsqr "https://github.com/cozmo/jsQR.git"
+    prop-types "^15.5.8"
+    webrtc-adapter "^5.0.6"
+
 react-router-dom@^4.1.1:
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-4.2.2.tgz#c8a81df3adc58bba8a76782e946cbd4eae649b8d"
@@ -6767,6 +6779,12 @@ rndm@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/rndm/-/rndm-1.2.0.tgz#f33fe9cfb52bbfd520aa18323bc65db110a1b76c"
 
+rtcpeerconnection-shim@^1.1.13:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/rtcpeerconnection-shim/-/rtcpeerconnection-shim-1.2.2.tgz#67511fafe4fcacf2bc357198f6bc1eede7a7ef46"
+  dependencies:
+    sdp "^2.2.0"
+
 run-async@^2.2.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/run-async/-/run-async-2.3.0.tgz#0371ab4ae0bdd720d4166d7dfda64ff7a445a6c0"
@@ -6846,6 +6864,10 @@ scss-tokenizer@^0.2.3:
   dependencies:
     js-base64 "^2.1.8"
     source-map "^0.4.2"
+
+sdp@^2.2.0, sdp@^2.3.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/sdp/-/sdp-2.5.0.tgz#b15a0b1dfd0a38f6a8c780e58f8c8fe73c29ffe5"
 
 select-hose@^2.0.0:
   version "2.0.0"
@@ -7896,6 +7918,13 @@ webpack@3.8.1:
     watchpack "^1.4.0"
     webpack-sources "^1.0.1"
     yargs "^8.0.2"
+
+webrtc-adapter@^5.0.6:
+  version "5.0.6"
+  resolved "https://registry.yarnpkg.com/webrtc-adapter/-/webrtc-adapter-5.0.6.tgz#7946fca194dadf869bb6c8cae1011dfda03f40c7"
+  dependencies:
+    rtcpeerconnection-shim "^1.1.13"
+    sdp "^2.3.0"
 
 websocket-driver@>=0.5.1:
   version "0.7.0"

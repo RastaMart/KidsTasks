@@ -14,6 +14,7 @@ import List from './pages/list'
 import Templates from './pages/templates'
 import Profil from './pages/profil'
 import AddFamillyMember from './pages/addFamillyMember'
+import JoinFamilly from './pages/joinFamilly'
 
 
 class AppRouter extends Component {
@@ -62,6 +63,7 @@ class AppRouter extends Component {
               <PrivateRoute user={this.state.user} path="/templates" component={Templates} />
               <PrivateRoute user={this.state.user} path="/profil" component={Profil} />
               <PrivateRoute user={this.state.user} path="/addFamillyMember" component={AddFamillyMember} />
+              <PrivateRoute user={this.state.user} path="/joinFamilly" component={JoinFamilly} />
 
               <Route render={() => <h3>Not found...</h3>} />
 

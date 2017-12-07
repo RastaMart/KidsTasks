@@ -23,19 +23,51 @@ class AddFamillyMember extends Component {
   componentDidMount() {    
     
     console.log('this.uid', this.uid);
+
+    let _theDate = new Date();
+    let rndPIN = 0;
+    while (rndPIN < 100000) {
+      rndPIN = Math.round(Math.random()*1000000);
+    }
+    
     this.usersRef = _const.fbDb.ref().child('users');
     this.userRef = this.usersRef.child(this.uid);
     this.familliesRef = _const.fbDb.ref().child('famillies');
     this.famillyRef = null;
-  
+    this.PINRef = _const.fbDb.ref().child('PIN')
+                    .child(_theDate.getFullYear())
+                    .child(("00"+(_theDate.getMonth()+1))
+                    .slice(-2)).child(("00"+_theDate.getDate()).slice(-2));
+
+
     this.userRef.on('value', userSnap => {
       let user = userSnap.val();
 
         this.setState({
-          loading: false,
           user: user
         });
         console.log('user', user);
+
+        let _pin = {};
+        _pin[rndPIN] = user.famillies[0];
+        this.PINRef.update(_pin);
+
+        this.famillyRef = this.familliesRef.child(user.famillies[0]);
+
+        this.famillyRef.on('value', (famillySnap) => {
+          var _familly = famillySnap.val();
+          console.log('_familly', _familly);
+          this.setState({
+            familly:_familly
+          });
+        });
+    });
+    this.PINRef.child(rndPIN).on('value', pinSnap => {
+      console.log('pinSnap.val()', pinSnap.val(), pinSnap.key);
+        this.setState({
+          rndPIN: rndPIN,
+          loading: false
+        });
     });
   }
 
@@ -54,12 +86,58 @@ class AddFamillyMember extends Component {
             this.state.loading ? <div>Loading...</div>
               :
               <div>
-                <p>{this.state.user.famillies[0]}</p>
+                {this.renderPendingsRequests()}
+                <p>Sur l'appareil de la personne à ajouter</p>
+                <p>Scanner ce code :</p>
                 <QRCode value={this.state.user.famillies[0]} />
+                <p>- ou -</p>
+                <p>Entrez ce code :</p>
+                <p className="famillyCode">{this.state.rndPIN}</p>
 
               </div>
           }
         </div>
+      </div>
+    );
+  }
+  renderPendingsRequests() {
+    if(this.state.familly) {
+      return(
+        <div>
+          {
+            !(this.state.familly.pending_parents || this.state.familly.pending_childs) ? '' :
+            <p>Demande(s) en attente(s) d'approbation :</p>
+          }
+          {
+            (!this.state.familly.pending_parents) ? '' :
+            <div>
+              
+              {
+                Object.keys(this.state.familly.pending_parents).map((userKey)=>{
+                  console.log('userKey', userKey);
+                  var user = this.state.familly.pending_parents[userKey];
+                  console.log('user', user);
+                  return this.renderPendingRequest(userKey, user);
+                })
+              }
+            </div>
+          }
+          {
+            (!this.state.familly.pending_childs) ? '' :
+            Object.keys(this.state.familly.pending_childs).map((userKey)=>{
+              console.log('userKey', userKey);
+              var user = this.state.familly.pending_childs[userKey];
+              return this.renderPendingRequest(userKey, user);
+            })
+          }
+        </div>
+      );
+    }
+  }
+  renderPendingRequest(userId, user) {
+    return(
+      <div key={userId} className="pendingFamilly">
+        {user.fullName}
       </div>
     );
   }

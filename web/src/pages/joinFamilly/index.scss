@@ -8,7 +8,23 @@
         overflow: auto;
 
         text-align: center;
+        padding:0 10%;
 
-        
+        .pendingFamilly {
+            border: 1px solid #000;
+            text-align: left;
+            padding:0.2em 0.5em;
+            font-size: 1.5em;
+        }
+
+        #PINField {
+            border:1px solid #000;
+            width:100%;
+            font-size: 3em;
+            text-align: center;
+        }
+        .famillyLabel {
+            font-size: 1.5em;
+        }
     }
 }
