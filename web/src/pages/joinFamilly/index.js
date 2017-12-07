@@ -45,17 +45,17 @@ class AddFamillyMember extends Component {
 
   render() {
     return (
-      <div id="addFamillyMember">
+      <div id="joinFamilly">
         <div className="header">
-          <h1>Ajouter un membre</h1>
+          <h1>Joindre une famille</h1>
         </div>
         <div className="content">
           {
             this.state.loading ? <div>Loading...</div>
               :
               <div>
-                <p>{this.state.user.famillies[0]}</p>
-                <QRCode value={this.state.user.famillies[0]} />
+                {/* <p>{this.state.user.famillies[0]}</p>
+                <QRCode value={this.state.user.famillies[0]} /> */}
 
               </div>
           }

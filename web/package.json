@@ -3,12 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "art": "^0.10.1",
     "firebase": "^4.6.2",
     "firebaseui": "^2.5.1",
-    "react": "^16.1.1",
+    "react": "^16.2.0",
+    "react-art-svg-renderer": "^0.0.1-rc.8",
     "react-dom": "^16.1.1",
+    "react-native": "^0.51.0",
+    "react-qr-code": "^0.1.2",
     "react-router": "^4.2.0",
-    "react-router-dom": "^4.1.1"
+    "react-router-dom": "^4.1.1",
+    "upgrade": "^1.1.0"
   },
   "devDependencies": {
     "node-sass": "^4.5.2",
