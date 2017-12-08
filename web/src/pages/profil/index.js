@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-
 import * as firebase from 'firebase';
 
 import _const from '../../const';
@@ -13,7 +12,6 @@ class Profil extends Component {
     super(props);
 
     this.uid = this.props.user.uid;
-
     this.state = {
       loading: true,
     };
@@ -28,6 +26,9 @@ class Profil extends Component {
     this.familliesRef = _const.fbDb.ref().child('famillies');
     this.famillyRef = null;
   
+
+    this.updateProfilePict(this.props.user.providerData[0].photoURL);
+
     this.userRef.on('value', userSnap => {
       let user = userSnap.val();
 
@@ -39,12 +40,36 @@ class Profil extends Component {
           loading: true,
           user: user
         });
-
         this.loadFamillies();
       }
     });
   }
+  updateProfilePict(profilePictUrl) {
+    var img = new Image(),
+    canvas = document.createElement("canvas"),
+    ctx = canvas.getContext("2d");
+    //src = "http://example.com/image"; // insert image url here
+    img.crossOrigin = "Anonymous";
+    img.onload = ()=> {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage( img, 0, 0 );
+      canvas.toBlob((blob) => {
+        this.saveProfilePict(blob);
+      }, "image/jpeg", 1);
+      
+    }
+    img.src = profilePictUrl;
+  }
+  saveProfilePict(blob) {
+    console.log('saveProfilePict', blob);
+        var storageRef = firebase.storage().ref();
+        var userProfilePictRef = storageRef.child('profilePict/' + this.uid + '.jpg')
 
+        userProfilePictRef.put(blob).then((snapshot) => {
+          this.userRef.update({pictUrl:snapshot.downloadURL});
+        });
+  }
   loadFamillies() {
     if(this.state.user && this.state.user.famillies && this.state.user.famillies[0]) {
       this.famillyRef = this.familliesRef.child(this.state.user.famillies[0]);
@@ -181,8 +206,8 @@ class Profil extends Component {
                 {this.render_familyState()}
                 
                 {
-                  (this.props.user.photoURL!=null)
-                  ?<img className='profilPict' src={this.props.user.photoURL} alt={this.props.user.displayName} />
+                  (this.state.user.pictUrl!=null)
+                  ?<img className='profilPict' src={this.state.user.pictUrl} alt={this.props.user.displayName} />
                   :<img className='profilPict' src="/img/default_profile.png" alt={this.props.user.displayName} />
                 }
                 <h2>{this.props.user.displayName}</h2>

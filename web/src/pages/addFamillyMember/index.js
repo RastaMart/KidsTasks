@@ -75,6 +75,17 @@ class AddFamillyMember extends Component {
     //
   }
 
+  acceptRequest(userId, user, event) {
+    console.log('acceptRequest', userId, event);
+  }
+  refuseRequest(userId, user, event) {
+    console.log('refuseRequest', userId, event);
+    
+    var _data = {};
+    _data[userId] = null;
+    this.famillyRef.child('pending_'+user.familyMemberType+'s').update(_data);
+  }
+
   render() {
     return (
       <div id="addFamillyMember">
@@ -106,7 +117,7 @@ class AddFamillyMember extends Component {
         <div>
           {
             !(this.state.familly.pending_parents || this.state.familly.pending_childs) ? '' :
-            <p>Demande(s) en attente(s) d'approbation :</p>
+            <h2>Demande(s) en attente(s) d'approbation :</h2>
           }
           {
             (!this.state.familly.pending_parents) ? '' :
@@ -130,6 +141,10 @@ class AddFamillyMember extends Component {
               return this.renderPendingRequest(userKey, user);
             })
           }
+          {
+            !(this.state.familly.pending_parents || this.state.familly.pending_childs) ? '' :
+            <h2>Nouvelle demande :</h2>
+          }
         </div>
       );
     }
@@ -137,7 +152,16 @@ class AddFamillyMember extends Component {
   renderPendingRequest(userId, user) {
     return(
       <div key={userId} className="pendingFamilly">
-        {user.fullName}
+        {
+          (user.pictUrl!=null)
+          ?<img className='profilPict' src={user.pictUrl} alt={user.fullName} />
+          :<img className='profilPict' src="/img/default_profile.png" alt={user.fullName} />
+        }
+        <p className="name">
+          {user.fullName}
+        </p>
+        <button className="btn accept" onClick={this.acceptRequest.bind(this, userId, user)}>Accepter</button>
+        <button className="btn refuse" onClick={this.refuseRequest.bind(this, userId, user)}>Refuser</button>
       </div>
     );
   }

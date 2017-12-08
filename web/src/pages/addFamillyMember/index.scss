@@ -11,10 +11,44 @@
         padding: 0 10%;
 
         .pendingFamilly {
+            position: relative;
             border: 1px solid #000;
             text-align: left;
             padding:0.2em 0.5em;
             font-size: 1.5em;
+            margin:20px 0;
+
+            .profilPict {
+                position: absolute;
+                top:0;
+                left:0;
+                width:60px;
+                height:60px;
+                overflow: hidden;
+                border: 1px solid rgba(0, 0, 0, 0.288);
+                border-radius: 100%;
+                margin:-10px 10px;
+            }
+            .name {
+                margin:0 150px 0 80px;
+                font-size: 0.8em;
+            }
+            .btn {
+                position: absolute;
+                top:0;
+                display: block;
+                width:60px;
+                height:60px;
+
+                margin:-10px 10px;
+
+                &.accept {
+                    right: 0;
+                }
+                &.refuse {
+                    right: 70px;
+                }
+            }
         }
         .famillyCode {
             font-size: 1.5em;

@@ -31,6 +31,8 @@ class AppRouter extends Component {
     this.userListener = _const.fbAuth.onAuthStateChanged((user) => {
 
       if (user) {
+        console.log('master user', user);
+        console.log('user.providerData[0].photoURL', user.providerData[0].photoURL);
         this.setState({
           user: user,
           loading: false,
