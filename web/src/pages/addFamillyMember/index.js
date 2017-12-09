@@ -76,11 +76,32 @@ class AddFamillyMember extends Component {
   }
 
   acceptRequest(userId, user, event) {
-    console.log('acceptRequest', userId, event);
+    console.log('acceptRequest', userId, user, event);
+
+    //Add familly to user
+    this.usersRef.child(userId).child('famillies').set([
+        this.state.user.famillies[0]
+      ]);
+    //Add user to familly
+    var _member = {};
+    _member[userId] = false;
+    this.famillyRef.child(user.familyMemberType + 's').update(_member);
+
+    this.changeRequestStatus(userId, user, true);
   }
   refuseRequest(userId, user, event) {
     console.log('refuseRequest', userId, event);
     
+    this.changeRequestStatus(userId, user, false);
+  }
+  changeRequestStatus(userId, user, accepted) {
+    this.usersRef.child(userId)
+    .child('pending_famillies')
+    .child(this.state.user.famillies[0])
+    .update({
+      approve:accepted
+    });
+
     var _data = {};
     _data[userId] = null;
     this.famillyRef.child('pending_'+user.familyMemberType+'s').update(_data);

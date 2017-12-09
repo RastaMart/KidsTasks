@@ -83,12 +83,16 @@ class AddFamillyMember extends Component {
       console.log('PINSnap', PINSnap.key, PINSnap.val());
       var _matchingPINFamillyId = PINSnap.val();
       if(_matchingPINFamillyId) {
+        console.log('match', _matchingPINFamillyId);
         this.setState({
           searchForPIN:false,
           famillyId : _matchingPINFamillyId
+        }, ()=>{
+          console.log('match setstate');
+          this.PINMatch();
         });
-        this.PINMatch();
       } else {
+        console.log('no match');
         this.setState({
           searchForPIN:false,
           famillyId : null
@@ -98,6 +102,7 @@ class AddFamillyMember extends Component {
   }
   PINMatch() {
     //this.familliesRef = _const.fbDb.ref().child('famillies');
+    console.log('this.state', this.state);
     this.famillyRef = this.familliesRef.child(this.state.famillyId);
 
     var addPending = true;
@@ -117,7 +122,8 @@ class AddFamillyMember extends Component {
 
         _data = {};
         _data[this.state.famillyId] = {
-          label:_familly.label
+          label:_familly.label,
+          approve:null
         };
         this.userRef.child('pending_famillies').update(_data);
 
@@ -130,6 +136,11 @@ class AddFamillyMember extends Component {
         });
       }
     });
+  }
+  deleteRequest(famillyId) {
+    var _data = {};
+    _data[famillyId] = null;
+    this.userRef.child('pending_famillies').update(_data);
   }
 
   componentWillUnmount() {
@@ -175,7 +186,14 @@ class AddFamillyMember extends Component {
                   console.log('pendingFamilly', pendingFamilly);
                   return(
                     <div key={famillyKey} className="pendingFamilly">
-                      {pendingFamilly.label}
+                    <p>{pendingFamilly.label}</p>
+                    {
+                      (pendingFamilly.approve==null) ? 
+                        <p>en attente</p> :
+                        (pendingFamilly.approve) ? 
+                        <p>approuvée <button onClick={this.deleteRequest.bind(this, famillyKey)}>ok</button></p> : 
+                        <p>refusée <button onClick={this.deleteRequest.bind(this, famillyKey)}>effacer</button></p>
+                    }
                     </div>
                   );
                 })

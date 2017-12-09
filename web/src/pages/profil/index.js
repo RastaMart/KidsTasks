@@ -20,7 +20,6 @@ class Profil extends Component {
 
   componentDidMount() {    
     
-    console.log('this.uid', this.uid);
     this.usersRef = _const.fbDb.ref().child('users');
     this.userRef = this.usersRef.child(this.uid);
     this.familliesRef = _const.fbDb.ref().child('famillies');
@@ -62,7 +61,6 @@ class Profil extends Component {
     img.src = profilePictUrl;
   }
   saveProfilePict(blob) {
-    console.log('saveProfilePict', blob);
         var storageRef = firebase.storage().ref();
         var userProfilePictRef = storageRef.child('profilePict/' + this.uid + '.jpg')
 
@@ -91,21 +89,16 @@ class Profil extends Component {
     }
   }
   loadFamilliesMembers() {
-    console.log('loadFamilliesMembers', this.state.famillies[0]);
-    // console.log('loadFamilliesMembers', [...this.state.famillies[0].parents, ...this.state.famillies[0].childs]);
-    // [...this.state.famillies[0].parents, ...this.state.famillies[0].childs].map((userId)=>{
-
-    // });
     for(var userId of Object.keys(this.state.famillies[0].parents)) {
-        console.log('userId', userId);
         this.loadMember('parents', userId);
+    }
+    for(var userId of Object.keys(this.state.famillies[0].childs)) {
+        this.loadMember('childs', userId);
     }
 
   }
   loadMember(famillyType, userId) {
-      console.log('loadMember', famillyType, userId);
       this.usersRef.child(userId).on('value', (userSnap)=> {
-          console.log(userId, userSnap.val());
           var _famillies = this.state.famillies;
           _famillies[0][famillyType][userId] = userSnap.val();
           this.setState({
@@ -139,12 +132,8 @@ class Profil extends Component {
 
     this.familliesRef.push(_familly)
     .then((newFamilly)=>{
-      console.log('familly', newFamilly.key);
       this.userRef.update({famillies:[newFamilly.key]});
     });
-    
-  }
-  joinFamilly() {
     
   }
 
@@ -174,6 +163,7 @@ class Profil extends Component {
   }
 
   render_userTile(userId, user) {
+    console.log('render_userTile', userId, user );
     return(
       <div key={userId} className="userTile">
         {
