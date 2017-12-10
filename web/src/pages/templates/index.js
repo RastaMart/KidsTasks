@@ -12,7 +12,6 @@ class Templates extends Component {
 
     this.uid = this.props.fbUser.uid;
     this.famillyId = this.props.user.famillies[0];
-    console.log('this.famillyId', this.famillyId);
     this.state = {
       templates: {},
     };
@@ -25,7 +24,6 @@ class Templates extends Component {
     this.templatesRef = _const.fbDb.ref().child('templates').child(this.famillyId);
 
     this.templatesRef.on('value', snap => {
-      console.log('snap',snap.val());
       this.setState({
         loading: false,
         templates: snap.val()
@@ -59,7 +57,6 @@ class Templates extends Component {
     }
   }
   addDayType(el) {
-    console.log('addDayType', el.value)
     if (el.value !== "") {
       this.templatesRef.push({
         //persisted: true,
@@ -79,33 +76,25 @@ class Templates extends Component {
     }
   }
   deleteBlock(dayTypeKey, blockKey) {
-    console.log('deleteBlock', dayTypeKey, blockKey);
     let block = this.state.templates[dayTypeKey].blocks[blockKey];
-    console.log('block', block);
      if (window.confirm(`Voulez-vous vraiment suprimer le bloc ${block.label}?`)) {
-       console.log('Go efface ' + blockKey);
        var updates = {};
        updates[blockKey] = null;
        this.templatesRef.child(dayTypeKey).child('blocks').update(updates);
      }
   }
   deleteTask(dayTypeKey, blockKey, taskKey) {
-    console.log('deleteTask', dayTypeKey, blockKey, taskKey);
 
     let task = this.state.templates[dayTypeKey].blocks[blockKey].tasks[taskKey];
-    console.log('task', task);
 
     if (window.confirm(`Voulez-vous vraiment suprimer la tâche  ${task.label}?`)) {
-       console.log('Go efface ' + taskKey);
        var updates = {};
        updates[taskKey] = null;
        this.templatesRef.child(dayTypeKey).child('blocks').child(blockKey).child('tasks').update(updates);
     }
   }
   addTask(el) {
-    console.log(this, el);
     if (el.value !== "") {
-      console.log('Save this Task');
       let dayTypeKey = el.getAttribute('data-daytypekey');
       let blockKey = el.getAttribute('data-blockkey');
 

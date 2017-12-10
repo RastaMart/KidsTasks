@@ -10,8 +10,9 @@ import Home from './pages/home'
 
 import Login from './pages/login'
 
-import List from './pages/list'
 import Templates from './pages/templates'
+import Confirm from './pages/confirm'
+import List from './pages/list'
 import Profil from './pages/profil'
 import AddFamillyMember from './pages/addFamillyMember'
 import JoinFamilly from './pages/joinFamilly'
@@ -97,8 +98,9 @@ class AppRouter extends Component {
               <Route path='/' exact component={Home} />
 
               <PublicRoute fbUser={this.state.fbUser} user={this.state.user} path='/login' component={Login} />
-              <PrivateRoute fbUser={this.state.fbUser} user={this.state.user} path="/list" component={List} />
               <PrivateRoute fbUser={this.state.fbUser} user={this.state.user} path="/templates" component={Templates} />
+              <PrivateRoute fbUser={this.state.fbUser} user={this.state.user} path="/confirm" component={Confirm} />
+              <PrivateRoute fbUser={this.state.fbUser} user={this.state.user} path="/list" component={List} />
               <PrivateRoute fbUser={this.state.fbUser} user={this.state.user} path="/profil" component={Profil} />
               <PrivateRoute fbUser={this.state.fbUser} user={this.state.user} path="/addFamillyMember" component={AddFamillyMember} />
               <PrivateRoute fbUser={this.state.fbUser} user={this.state.user} path="/joinFamilly" component={JoinFamilly} />

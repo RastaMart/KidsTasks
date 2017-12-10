@@ -44,12 +44,10 @@ class List extends Component {
   }
 
   createTheDayLists() {
-    console.log('Create the day list');
 
     let templateRef = _const.fbDb.ref().child('templates/'+this.famillyId);
     templateRef.once('value').then(templateSnap => {
       let _templateData = templateSnap.val();
-      console.log('_templateData', _templateData);
       if(_templateData!= null) {
         let firstKey = Object.keys(_templateData)[0];
         let firstDayType = _templateData[firstKey];
@@ -103,7 +101,6 @@ class List extends Component {
           return block.tasks[tKey].state === 'done';
         }).length;
         let taskCount = Object.keys(block.tasks).length;
-        console.log('doneCount taskCount', doneCount, taskCount);
         return doneCount!==taskCount;
       }).length === 0
     ) {
