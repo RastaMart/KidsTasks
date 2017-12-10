@@ -11,9 +11,9 @@ import firebaseui from 'firebaseui';
       projectId: "kidstasks-649d6",
       storageBucket: "kidstasks-649d6.appspot.com",
       messagingSenderId: "419939611097",
-      domain:'http://localhost:3000',
+      //domain:'http://localhost:3000',
       //domain:'http://192.168.1.11:3000',
-      //domain:'https://192.168.1.11:3000',
+      domain:'https://192.168.1.11:3000',
     };
     firebase.initializeApp(config);
 

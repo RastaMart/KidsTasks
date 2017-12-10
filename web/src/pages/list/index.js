@@ -10,7 +10,8 @@ class List extends Component {
   constructor(props) {
     super(props);
 
-    this.uid = this.props.user.uid;
+    this.uid = this.props.fbUser.uid;
+    this.famillyId = this.props.user.famillies[0];
 
     this.displayDateOptions = {weekday: "long", month: "long", day: "numeric"};
     //let _theDate = new Date(2017,10,1);
@@ -45,7 +46,7 @@ class List extends Component {
   createTheDayLists() {
     console.log('Create the day list');
 
-    let templateRef = _const.fbDb.ref().child('templates/'+this.uid);
+    let templateRef = _const.fbDb.ref().child('templates/'+this.famillyId);
     templateRef.once('value').then(templateSnap => {
       let _templateData = templateSnap.val();
       console.log('_templateData', _templateData);

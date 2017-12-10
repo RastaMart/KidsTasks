@@ -10,7 +10,9 @@ class Templates extends Component {
   constructor(props) {
     super(props);
 
-    this.uid = this.props.user.uid;
+    this.uid = this.props.fbUser.uid;
+    this.famillyId = this.props.user.famillies[0];
+    console.log('this.famillyId', this.famillyId);
     this.state = {
       templates: {},
     };
@@ -20,7 +22,7 @@ class Templates extends Component {
 
   componentDidMount() {
 
-    this.templatesRef = _const.fbDb.ref().child('templates').child(this.uid);
+    this.templatesRef = _const.fbDb.ref().child('templates').child(this.famillyId);
 
     this.templatesRef.on('value', snap => {
       console.log('snap',snap.val());

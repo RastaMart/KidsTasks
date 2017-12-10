@@ -12,7 +12,7 @@ class AddFamillyMember extends Component {
   constructor(props) {
     super(props);
 
-    this.uid = this.props.user.uid;
+    this.uid = this.props.fbUser.uid;
 
     this.state = {
       loading: true,
@@ -21,9 +21,6 @@ class AddFamillyMember extends Component {
   }
 
   componentDidMount() {    
-    
-    console.log('this.uid', this.uid);
-
     let _theDate = new Date();
     let rndPIN = 0;
     while (rndPIN < 100000) {
@@ -46,7 +43,6 @@ class AddFamillyMember extends Component {
         this.setState({
           user: user
         });
-        console.log('user', user);
 
         let _pin = {};
         _pin[rndPIN] = user.famillies[0];
@@ -56,14 +52,12 @@ class AddFamillyMember extends Component {
 
         this.famillyRef.on('value', (famillySnap) => {
           var _familly = famillySnap.val();
-          console.log('_familly', _familly);
           this.setState({
             familly:_familly
           });
         });
     });
     this.PINRef.child(rndPIN).on('value', pinSnap => {
-      console.log('pinSnap.val()', pinSnap.val(), pinSnap.key);
         this.setState({
           rndPIN: rndPIN,
           loading: false
@@ -76,8 +70,6 @@ class AddFamillyMember extends Component {
   }
 
   acceptRequest(userId, user, event) {
-    console.log('acceptRequest', userId, user, event);
-
     //Add familly to user
     this.usersRef.child(userId).child('famillies').set([
         this.state.user.famillies[0]
@@ -88,10 +80,9 @@ class AddFamillyMember extends Component {
     this.famillyRef.child(user.familyMemberType + 's').update(_member);
 
     this.changeRequestStatus(userId, user, true);
+    this.props.history.push("/Profil");
   }
   refuseRequest(userId, user, event) {
-    console.log('refuseRequest', userId, event);
-    
     this.changeRequestStatus(userId, user, false);
   }
   changeRequestStatus(userId, user, accepted) {
@@ -146,9 +137,7 @@ class AddFamillyMember extends Component {
               
               {
                 Object.keys(this.state.familly.pending_parents).map((userKey)=>{
-                  console.log('userKey', userKey);
                   var user = this.state.familly.pending_parents[userKey];
-                  console.log('user', user);
                   return this.renderPendingRequest(userKey, user);
                 })
               }
@@ -157,7 +146,6 @@ class AddFamillyMember extends Component {
           {
             (!this.state.familly.pending_childs) ? '' :
             Object.keys(this.state.familly.pending_childs).map((userKey)=>{
-              console.log('userKey', userKey);
               var user = this.state.familly.pending_childs[userKey];
               return this.renderPendingRequest(userKey, user);
             })

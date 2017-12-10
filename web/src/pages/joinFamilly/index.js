@@ -12,7 +12,7 @@ class AddFamillyMember extends Component {
   constructor(props) {
     super(props);
 
-    this.uid = this.props.user.uid;
+    this.uid = this.props.fbUser.uid;
 
     this.state = {
       loading: true,
@@ -31,7 +31,6 @@ class AddFamillyMember extends Component {
 
   componentDidMount() {
 
-    console.log('this.uid', this.uid);
     let _theDate = new Date();
 
     this.usersRef = _const.fbDb.ref().child('users');
@@ -51,19 +50,17 @@ class AddFamillyMember extends Component {
           loading: false,
           user: user,
         });
-        console.log('user', user);
     });
 
   }
   handleScan(data){
     if(data){
       this.setState({
-        result: data,
-      })
+        famillyId: data,
+      }, ()=>{this.PINMatch();})
     }
   }
   handleScanError(err){
-    console.log(err);
     this.setState({
       camAvailable:false
     });
@@ -80,19 +77,15 @@ class AddFamillyMember extends Component {
       searchForPIN:true
     });
     this.PINRef.child(PIN).on('value', (PINSnap) => {
-      console.log('PINSnap', PINSnap.key, PINSnap.val());
       var _matchingPINFamillyId = PINSnap.val();
       if(_matchingPINFamillyId) {
-        console.log('match', _matchingPINFamillyId);
         this.setState({
           searchForPIN:false,
           famillyId : _matchingPINFamillyId
         }, ()=>{
-          console.log('match setstate');
           this.PINMatch();
         });
       } else {
-        console.log('no match');
         this.setState({
           searchForPIN:false,
           famillyId : null
@@ -102,7 +95,6 @@ class AddFamillyMember extends Component {
   }
   PINMatch() {
     //this.familliesRef = _const.fbDb.ref().child('famillies');
-    console.log('this.state', this.state);
     this.famillyRef = this.familliesRef.child(this.state.famillyId);
 
     var addPending = true;
@@ -137,10 +129,13 @@ class AddFamillyMember extends Component {
       }
     });
   }
-  deleteRequest(famillyId) {
+  deleteRequest(famillyId, redirectAfter) {
     var _data = {};
     _data[famillyId] = null;
     this.userRef.child('pending_famillies').update(_data);
+    if(redirectAfter) {
+      this.props.history.push("/Profil");
+    }
   }
 
   componentWillUnmount() {
@@ -183,7 +178,6 @@ class AddFamillyMember extends Component {
               {
                 Object.keys(this.state.user.pending_famillies).map((famillyKey) => {
                   var pendingFamilly = this.state.user.pending_famillies[famillyKey];
-                  console.log('pendingFamilly', pendingFamilly);
                   return(
                     <div key={famillyKey} className="pendingFamilly">
                     <p>{pendingFamilly.label}</p>
@@ -191,8 +185,8 @@ class AddFamillyMember extends Component {
                       (pendingFamilly.approve==null) ? 
                         <p>en attente</p> :
                         (pendingFamilly.approve) ? 
-                        <p>approuvée <button onClick={this.deleteRequest.bind(this, famillyKey)}>ok</button></p> : 
-                        <p>refusée <button onClick={this.deleteRequest.bind(this, famillyKey)}>effacer</button></p>
+                        <p>approuvée <button onClick={this.deleteRequest.bind(this, famillyKey, true)}>ok</button></p> : 
+                        <p>refusée <button onClick={this.deleteRequest.bind(this, famillyKey, false)}>effacer</button></p>
                     }
                     </div>
                   );

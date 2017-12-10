@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route, BrowserRouter, Redirect, Switch } from 'react-router-dom'
-//import * as firebase from 'firebase';
+import * as firebase from 'firebase';
 
 import _const from './const';
 
@@ -21,26 +21,37 @@ class AppRouter extends Component {
 
   constructor() {
     super();
+    this.firstLoad = true;
     this.state = {
-      user: null,
+      fbUser: null,
       loading: true,
     };
   }
 
   componentDidMount() {
-    this.userListener = _const.fbAuth.onAuthStateChanged((user) => {
+    this.fbUserListener = _const.fbAuth.onAuthStateChanged((fbUser) => {
 
-      if (user) {
-        console.log('master user', user);
-        console.log('user.providerData[0].photoURL', user.providerData[0].photoURL);
-        this.setState({
-          user: user,
-          loading: false,
+      if (fbUser) {
+        this.uid = fbUser.uid;
+        this.userRef = _const.fbDb.ref().child('users').child(this.uid);
+        this.userRef.on('value', userSnap => {
+          let user = userSnap.val();
+
+          this.setState({
+            fbUser: fbUser,
+            user:user,
+            loading: false,
+          });
+          if(this.firstLoad) {
+            this.firstLoad = false;
+            this.updateProfilePict(fbUser.providerData[0].photoURL);
+          }
         });
 
 
       } else {
         this.setState({
+          fbUser: null,
           user: null,
           loading: false
         })
@@ -48,24 +59,49 @@ class AppRouter extends Component {
     })
   }
   componentWillUnmount() {
-    this.userListener.off();
+    this.fbUserListener.off();
   }
 
+  updateProfilePict(profilePictUrl) {
+    var img = new Image(),
+    canvas = document.createElement("canvas"),
+    ctx = canvas.getContext("2d");
+    //src = "http://example.com/image"; // insert image url here
+    img.crossOrigin = "Anonymous";
+    img.onload = ()=> {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage( img, 0, 0 );
+      canvas.toBlob((blob) => {
+        this.saveProfilePict(blob);
+      }, "image/jpeg", 1);
+      
+    }
+    img.src = profilePictUrl;
+  }
+  saveProfilePict(blob) {
+        var storageRef = firebase.storage().ref();
+        var userProfilePictRef = storageRef.child('profilePict/' + this.uid + '.jpg')
+
+        userProfilePictRef.put(blob).then((snapshot) => {
+          this.userRef.update({pictUrl:snapshot.downloadURL});
+        });
+  }
 
   render() {
     return (
       (this.state.loading) ? <div>Loading...</div> : (
         <BrowserRouter>
-          <App user={this.state.user}>
+          <App fbUser={this.state.fbUser} user={this.state.user}>
             <Switch>
               <Route path='/' exact component={Home} />
 
-              <PublicRoute user={this.state.user} path='/login' component={Login} />
-              <PrivateRoute user={this.state.user} path="/list" component={List} />
-              <PrivateRoute user={this.state.user} path="/templates" component={Templates} />
-              <PrivateRoute user={this.state.user} path="/profil" component={Profil} />
-              <PrivateRoute user={this.state.user} path="/addFamillyMember" component={AddFamillyMember} />
-              <PrivateRoute user={this.state.user} path="/joinFamilly" component={JoinFamilly} />
+              <PublicRoute fbUser={this.state.fbUser} user={this.state.user} path='/login' component={Login} />
+              <PrivateRoute fbUser={this.state.fbUser} user={this.state.user} path="/list" component={List} />
+              <PrivateRoute fbUser={this.state.fbUser} user={this.state.user} path="/templates" component={Templates} />
+              <PrivateRoute fbUser={this.state.fbUser} user={this.state.user} path="/profil" component={Profil} />
+              <PrivateRoute fbUser={this.state.fbUser} user={this.state.user} path="/addFamillyMember" component={AddFamillyMember} />
+              <PrivateRoute fbUser={this.state.fbUser} user={this.state.user} path="/joinFamilly" component={JoinFamilly} />
 
               <Route render={() => <h3>Not found...</h3>} />
 
@@ -77,18 +113,18 @@ class AppRouter extends Component {
   }
 }
 
-function PrivateRoute({ component: Component, user, ...rest }) {
+function PrivateRoute({ component: Component, fbUser, user, ...rest }) {
   return (
     <Route
       {...rest}
-      render={(props) => user !== null
-        ? <Component user={user} {...props} />
+      render={(props) => fbUser !== null
+        ? <Component fbUser={fbUser} user={user} {...props} />
         : <Redirect to={{ pathname: '/login', state: { from: props.location } }} />}
     />
   )
 }
 
-function PublicRoute({ component: Component, user, ...rest }) {
+function PublicRoute({ component: Component, fbUser, user, ...rest }) {
   return (
     <Route
       {...rest}

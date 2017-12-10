@@ -10,21 +10,30 @@ class Navigation extends Component {
     }
 
     render() {
+        console.log('this.props.fbUser', this.props.fbUser);
+        console.log('this.props.user', this.props.user);
         return (
             <div id="navigation">
                 <ul id='menu'>
-                    <li>
-                        <Link to='/list'>
-                            <i className="fa fa-list-ul"></i>
-                            <span>Listes</span>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link to='/templates'>
-                            <i className="fa fa-user" aria-hidden="true"></i>
-                            <span>Modèles</span>
-                        </Link>
-                    </li>
+                    {
+                        (!this.props.user) ? '' : 
+
+                        (this.props.user.familyMemberType === 'parent') ? 
+
+                            <li>
+                                <Link to='/templates'>
+                                <i className="fa fa-list-ul"></i>
+                                    <span>Modèles</span>
+                                </Link>
+                            </li>
+                        :
+                            <li>
+                                <Link to='/list'>
+                                    <i className="fa fa-list-ul"></i>
+                                    <span>Listes</span>
+                                </Link>
+                            </li>
+                    }
                     <li>
                         <Link to='/profil'>
                             <i className="fa fa-user" aria-hidden="true"></i>
@@ -37,11 +46,11 @@ class Navigation extends Component {
                     <li><Link to='/my'>My</Link></li>
                 </ul>
 
-                {(this.props.user != null) ?
+                {(this.props.fbUser != null) ?
                     <ul id='UserMenu'>
                         <li>
-                            {this.props.user.displayName}
-                            <img className='profilPict' src={this.props.user.photoURL} alt={this.props.user.displayName} />
+                            {this.props.fbUser.displayName}
+                            <img className='profilPict' src={this.props.fbUser.photoURL} alt={this.props.fbUser.displayName} />
                         </li>
                         <li><a href="#" id="logoutBtn" className='hide'>Logout</a></li>
                     </ul>

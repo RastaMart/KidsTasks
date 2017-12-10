@@ -11,11 +11,11 @@ class Profil extends Component {
   constructor(props) {
     super(props);
 
-    this.uid = this.props.user.uid;
+    this.uid = this.props.fbUser.uid;
     this.state = {
       loading: true,
+      user:this.props.user
     };
-
   }
 
   componentDidMount() {    
@@ -25,9 +25,6 @@ class Profil extends Component {
     this.familliesRef = _const.fbDb.ref().child('famillies');
     this.famillyRef = null;
   
-
-    this.updateProfilePict(this.props.user.providerData[0].photoURL);
-
     this.userRef.on('value', userSnap => {
       let user = userSnap.val();
 
@@ -43,31 +40,6 @@ class Profil extends Component {
       }
     });
   }
-  updateProfilePict(profilePictUrl) {
-    var img = new Image(),
-    canvas = document.createElement("canvas"),
-    ctx = canvas.getContext("2d");
-    //src = "http://example.com/image"; // insert image url here
-    img.crossOrigin = "Anonymous";
-    img.onload = ()=> {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage( img, 0, 0 );
-      canvas.toBlob((blob) => {
-        this.saveProfilePict(blob);
-      }, "image/jpeg", 1);
-      
-    }
-    img.src = profilePictUrl;
-  }
-  saveProfilePict(blob) {
-        var storageRef = firebase.storage().ref();
-        var userProfilePictRef = storageRef.child('profilePict/' + this.uid + '.jpg')
-
-        userProfilePictRef.put(blob).then((snapshot) => {
-          this.userRef.update({pictUrl:snapshot.downloadURL});
-        });
-  }
   loadFamillies() {
     if(this.state.user && this.state.user.famillies && this.state.user.famillies[0]) {
       this.famillyRef = this.familliesRef.child(this.state.user.famillies[0]);
@@ -78,8 +50,10 @@ class Profil extends Component {
         this.setState({
           loading: false,
           famillies:[_familly]
+        }, () => {
+          this.loadFamilliesMembers();
         });
-        this.loadFamilliesMembers();
+        
       });
     } else {
       this.setState({
@@ -89,11 +63,11 @@ class Profil extends Component {
     }
   }
   loadFamilliesMembers() {
-    for(var userId of Object.keys(this.state.famillies[0].parents)) {
-        this.loadMember('parents', userId);
+    for(var userIdParent of Object.keys(this.state.famillies[0].parents)) {
+        this.loadMember('parents', userIdParent);
     }
-    for(var userId of Object.keys(this.state.famillies[0].childs)) {
-        this.loadMember('childs', userId);
+    for(var userIdChild of Object.keys(this.state.famillies[0].childs)) {
+        this.loadMember('childs', userIdChild);
     }
 
   }
@@ -114,10 +88,10 @@ class Profil extends Component {
   createUser() {
     let users = {};
     users[this.uid] = {
-      fullName : this.props.user.displayName,
+      fullName : this.props.fbUser.displayName,
     }
-    if(this.props.user.photoURL!=null) {
-      users[this.uid].pictUrl = this.props.user.photoURL
+    if(this.props.fbUser.photoURL!=null) {
+      users[this.uid].pictUrl = this.props.fbUser.photoURL
     }
     this.usersRef.update(users);
   }
@@ -126,7 +100,7 @@ class Profil extends Component {
   }
   createFamilly() {
 
-    let _familly = {label: "Famille de " + this.props.user.displayName};
+    let _familly = {label: "Famille de " + this.props.fbUser.displayName};
      _familly[this.state.user.familyMemberType+'s'] = {};
      _familly[this.state.user.familyMemberType+'s'][this.uid] = false;
 
@@ -163,7 +137,6 @@ class Profil extends Component {
   }
 
   render_userTile(userId, user) {
-    console.log('render_userTile', userId, user );
     return(
       <div key={userId} className="userTile">
         {
@@ -197,12 +170,12 @@ class Profil extends Component {
                 
                 {
                   (this.state.user.pictUrl!=null)
-                  ?<img className='profilPict' src={this.state.user.pictUrl} alt={this.props.user.displayName} />
-                  :<img className='profilPict' src="/img/default_profile.png" alt={this.props.user.displayName} />
+                  ?<img className='profilPict' src={this.state.user.pictUrl} alt={this.props.fbUser.displayName} />
+                  :<img className='profilPict' src="/img/default_profile.png" alt={this.props.fbUser.displayName} />
                 }
-                <h2>{this.props.user.displayName}</h2>
+                <h2>{this.props.fbUser.displayName}</h2>
                 
-                {/* <p>{JSON.stringify(this.props.user.uid, null,4)}</p> */}
+                {/* <p>{JSON.stringify(this.props.fbUser.uid, null,4)}</p> */}
                 
                 <button id="logoutBtn" className='hide' onClick={this.logoutUser.bind(this)}>Me déconnecter</button>
 
