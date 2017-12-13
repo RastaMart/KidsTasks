@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Task from '../../components/Task';
+import Block from '../../components/Block';
 //import * as firebase from 'firebase';
 
 import _const from '../../const';
@@ -64,7 +64,7 @@ class Confirm extends Component {
 
   render() {
     return (
-      <div id="list">
+      <div id="confirm">
         <div className="header">
           <h1>Confirmation</h1>
         </div>
@@ -80,29 +80,33 @@ class Confirm extends Component {
                 
                 {(this.state.childsLists[childKey] && 
                   Object.keys(this.state.childsLists[childKey]).map(dateKey => {
+                    var theDate = new Date(this.state.childsLists[childKey][dateKey].str_date);
                     var data = this.state.childsLists[childKey][dateKey].data;
 
                     return(
                       <div key={dateKey}>
-                        <h3>{dateKey}</h3>
+                        <h2>{theDate.toLocaleDateString('fr-CA', this.displayDateOptions)}</h2>
                         {(data.blocks && 
                           Object.keys(data.blocks).map(blockKey => {
                             var block = data.blocks[blockKey];
 
-                            return(
-                              <div key={blockKey}>
-                                <h4>{block.label}</h4>
-                                {(block.tasks && 
-                                  Object.keys(block.tasks).map(taskKey => {
-                                    var task = block.tasks[taskKey];
+                            return (<Block key={blockKey} uid={childKey} dateString={dateKey} blockKey={blockKey} block={block} />);
+                            // return(
+                            //   <div key={blockKey} className="block">
+                            //     <h4>{block.label}</h4>
+                            //     <ul>
+                            //       {(block.tasks && 
+                            //         Object.keys(block.tasks).map(taskKey => {
+                            //           var task = block.tasks[taskKey];
 
-                                    return(
-                                      <Task key={taskKey} uid={childKey} dateString={dateKey} blockKey={blockKey} taskKey={taskKey} task={task} />
-                                    )
-                                  })
-                                )}
-                              </div>
-                            )
+                            //           return(
+                            //             <Task key={taskKey} uid={childKey} dateString={dateKey} blockKey={blockKey} taskKey={taskKey} task={task} />
+                            //           )
+                            //         })
+                            //       )}
+                            //     </ul>
+                            //   </div>
+                            // )
                           })
                         )}
                       </div>

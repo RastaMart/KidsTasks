@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Task from '../../components/Task';
+//import Task from '../../components/Task';
+import Block from '../../components/Block';
 //import * as firebase from 'firebase';
 
 import _const from '../../const';
@@ -31,7 +32,6 @@ class List extends Component {
     this.toDayListRef = this.listsRef.child(this.state.dateString);
 
     this.toDayListRef.on('value', snap => {
-      console.log('toDayListRef value change');
       this.setState({
         loading: false,
         lists: snap.val()
@@ -69,28 +69,6 @@ class List extends Component {
     this.toDayListRef.off();
   }
 
-  // toggleTask(blockKey, taskKey) {
-
-  //   let task = this.state.lists.data.blocks[blockKey].tasks[taskKey];
-  //   let newTask = Object.assign({}, task);
-  //   if(typeof(task.state)==='undefined' || task.state === 'todo') {
-  //     newTask.state = 'done';
-  //   } else {
-  //     newTask.state = 'todo';
-  //   }
-
-  //   var updates = {};
-  //   updates[taskKey] = newTask;
-  //   this.toDayListRef.child('data').child('blocks').child(blockKey).child('tasks').update(updates);
-  // }
-  forceOpenBlock(blockKey, wantItOpen) {
-    let block = this.state.lists.data.blocks[blockKey];
-    let newBlock = Object.assign({}, block);
-    newBlock.forceOpen = wantItOpen;
-    var updates = {};
-    updates[blockKey] = newBlock;
-    this.toDayListRef.child('data').child('blocks').update(updates);
-  }
 
   render() {
     let dayDone = false;
@@ -125,37 +103,7 @@ class List extends Component {
                 Object.keys(this.state.lists.data.blocks).map((blockKey, index) => {
                   let block = this.state.lists.data.blocks[blockKey];
 
-                  let doneCount = Object.keys(block.tasks).filter(tKey=>{
-                    return block.tasks[tKey].state === 'done';
-                  }).length;
-                  let taskCount = Object.keys(block.tasks).length;
-                  
-                  let forceCloseDOM = (block.forceOpen) ? <li><button onClick={this.forceOpenBlock.bind(this, blockKey, false)}>... Cacher ce block</button></li> : "";
-
-                  let tasksListDOM = (doneCount===taskCount && !block.forceOpen) ? 
-                    <div>
-                      <button onClick={this.forceOpenBlock.bind(this, blockKey, true)}>...</button>
-                    </div> : 
-                    <ul>
-
-                    {(block.tasks != null) && 
-                      Object.keys(block.tasks).map((taskKey, index) => {
-                        let task = block.tasks[taskKey];
-
-                        return(
-                          <Task key={taskKey} uid={this.uid} dateString={this.state.dateString} blockKey={blockKey} taskKey={taskKey} task={task} />
-                        );
-                    })}
-                    {forceCloseDOM}
-                  </ul>
-                  ;
-
-                  return (
-                    <div key={blockKey} data-blockkey={blockKey} className="block">
-                      <h3>{block.label} [{doneCount}/{taskCount}] </h3>
-                      {tasksListDOM}
-                    </div>
-                  );
+                  return (<Block key={blockKey} uid={this.uid} dateString={this.state.dateString} blockKey={blockKey} block={block} />);
                 })
               }
 

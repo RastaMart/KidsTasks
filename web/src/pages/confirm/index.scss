@@ -1,4 +1,4 @@
-#list {    
+#confirm {    
     .content {
         position: absolute;
         bottom: 46px;
@@ -11,43 +11,6 @@
             font-size: 14px;
             text-align: center;
         }
-        .dayList {
-            
-        }
-        .block {
-            h3 {
-                font-size: 12px;
-                padding:5px 10px;
-                border-bottom: 1px solid rgba(0,0,0,0.2);
-                font-weight: bold;
-            }
-            ul {
-                list-style: none;
-                margin:0;
-                padding:0;
-                
-                li {
-                    margin:0;
-                    padding:10px;
-                    border-bottom: 1px solid rgba(0,0,0,0.1);
-                    font-size: 18px;
 
-                    &.done {
-                        color:rgba(0,0,0,0.3);
-
-                        span {
-                            text-decoration: line-through;
-                        }
-                    }
-                    &.after {
-                        color:rgba(0,0,0,0.3);
-
-                        span {
-                            
-                        }
-                    }
-                }
-            }
-        }
     }
 }
