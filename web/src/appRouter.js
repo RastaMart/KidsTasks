@@ -9,6 +9,7 @@ import App from './app/'
 import Home from './pages/home'
 
 import Login from './pages/login'
+import LoginSuccess from './pages/loginSuccess'
 
 import Templates from './pages/templates'
 import Confirm from './pages/confirm'
@@ -60,7 +61,7 @@ class AppRouter extends Component {
     })
   }
   componentWillUnmount() {
-    this.fbUserListener.off();
+    
   }
 
   updateProfilePict(profilePictUrl) {
@@ -98,6 +99,7 @@ class AppRouter extends Component {
               <Route path='/' exact component={Home} />
 
               <PublicRoute fbUser={this.state.fbUser} user={this.state.user} path='/login' component={Login} />
+              <PrivateRoute fbUser={this.state.fbUser} user={this.state.user} path="/loginSuccess" component={LoginSuccess} />
               <PrivateRoute fbUser={this.state.fbUser} user={this.state.user} path="/templates" component={Templates} />
               <PrivateRoute fbUser={this.state.fbUser} user={this.state.user} path="/confirm" component={Confirm} />
               <PrivateRoute fbUser={this.state.fbUser} user={this.state.user} path="/list" component={List} />

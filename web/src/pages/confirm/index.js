@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Task from '../../components/Task';
 //import * as firebase from 'firebase';
 
 import _const from '../../const';
@@ -13,57 +14,52 @@ class Confirm extends Component {
     this.uid = this.props.fbUser.uid;
     this.famillyId = this.props.user.famillies[0];
 
-    this.displayDateOptions = {weekday: "long", month: "long", day: "numeric"};
-    let _theDate = new Date();
+    //this.displayDateOptions = {weekday: "long", month: "long", day: "numeric"};
+    //let _theDate = new Date();
     this.state = {
-      theDate : _theDate,
-      dateString : _theDate.getFullYear() + "" + ("00"+(_theDate.getMonth()+1)).slice(-2) + "" + ("00"+_theDate.getDate()).slice(-2)
+      childs:{},
+      childsLists:{}
+      //theDate : _theDate,
+      //dateString : _theDate.getFullYear() + "" + ("00"+(_theDate.getMonth()+1)).slice(-2) + "" + ("00"+_theDate.getDate()).slice(-2)
     };
 
 
   }
 
   componentDidMount() {
+    this.dbRef = _const.fbDb.ref();
+    this.childsRef = this.dbRef.child('famillies').child(this.famillyId ).child('childs');
+    this.usersRef = {};
+    this.childsListsRef = {};
+    
+    this.childsRef.on('value', childsSnap => {
+      var famillies = childsSnap.val();
+      for(var userKey of Object.keys(famillies)) {
 
-    this.listsRef = _const.fbDb.ref().child('lists').child(this.uid);
-    this.toDayListRef = this.listsRef.child(this.state.dateString);
+        this.usersRef[userKey] = this.dbRef.child('users').child(userKey);
+        this.childsListsRef[userKey] = this.dbRef.child('lists').child(userKey);
 
-    this.toDayListRef.on('value', snap => {
 
-      this.setState({
-        loading: false,
-        //lists: snap.val()
-      });
+        this.usersRef[userKey].on('value', userSnap => {
+          var _childs = this.state.childs;
+          _childs[userSnap.key] = userSnap.val();
+          this.setState({
+            childs:_childs
+          });
+        });
 
+        this.childsListsRef[userKey].on('value', childsListsSnap => {
+          var _childsLists = this.state.childsLists;
+          _childsLists[childsListsSnap.key] = childsListsSnap.val();
+          this.setState({
+            childsLists:_childsLists
+          });
+        });
+      }
     });
-
   }
   componentWillUnmount() {
-    this.listsRef.off();
-    this.toDayListRef.off();
-  }
-
-  toggleTask(blockKey, taskKey) {
-
-    let task = this.state.lists.data.blocks[blockKey].tasks[taskKey];
-    let newTask = Object.assign({}, task);
-    if(typeof(task.state)==='undefined' || task.state === 'todo') {
-      newTask.state = 'done';
-    } else {
-      newTask.state = 'todo';
-    }
-
-    var updates = {};
-    updates[taskKey] = newTask;
-    this.toDayListRef.child('data').child('blocks').child(blockKey).child('tasks').update(updates);
-  }
-  forceOpenBlock(blockKey, wantItOpen) {
-    let block = this.state.lists.data.blocks[blockKey];
-    let newBlock = Object.assign({}, block);
-    newBlock.forceOpen = wantItOpen;
-    var updates = {};
-    updates[blockKey] = newBlock;
-    this.toDayListRef.child('data').child('blocks').update(updates);
+    //TODO unmount
   }
 
   render() {
@@ -73,59 +69,51 @@ class Confirm extends Component {
           <h1>Confirmation</h1>
         </div>
         <div className="content">
-          <h2>{this.state.theDate.toLocaleDateString('fr-CA', this.displayDateOptions)}</h2>
+          {/* <h2>{this.state.theDate.toLocaleDateString('fr-CA', this.displayDateOptions)}</h2> */}
 
-          <div className="dayList">
-
-            {(this.state.lists != null) && (this.state.lists.data != null) && (this.state.lists.data.blocks != null) &&
-              Object.keys(this.state.lists.data.blocks).map((blockKey, index) => {
-                let block = this.state.lists.data.blocks[blockKey];
-
-                let doneCount = Object.keys(block.tasks).filter(tKey=>{
-                  return block.tasks[tKey].state === 'done';
-                }).length;
-                let taskCount = Object.keys(block.tasks).length;
+          {Object.keys(this.state.childs).map(childKey => {
+            let child = this.state.childs[childKey];
+            return(
+              <div key={childKey}>
+                <h2>{child.fullName}</h2>
+                <p>{child.pictUrl}</p>
                 
-                let forceCloseDOM = (block.forceOpen) ? <li><button onClick={this.forceOpenBlock.bind(this, blockKey, false)}>... Cacher ce block</button></li> : "";
+                {(this.state.childsLists[childKey] && 
+                  Object.keys(this.state.childsLists[childKey]).map(dateKey => {
+                    var data = this.state.childsLists[childKey][dateKey].data;
 
-                let tasksListDOM = (doneCount===taskCount && !block.forceOpen) ? 
-                  <div>
-                    <button onClick={this.forceOpenBlock.bind(this, blockKey, true)}>...</button>
-                  </div> : 
-                  <ul>
-                  {(block.tasks != null) && 
-                    Object.keys(block.tasks).map((taskKey, index) => {
-                      let task = block.tasks[taskKey];
+                    return(
+                      <div key={dateKey}>
+                        <h3>{dateKey}</h3>
+                        {(data.blocks && 
+                          Object.keys(data.blocks).map(blockKey => {
+                            var block = data.blocks[blockKey];
 
-                      let classState = "";
-                      let classIcon = "fa fa-square-o";
-                      if(task.state === 'done') {
-                        classState = 'done';
-                        classIcon = "fa fa-check-square-o";
-                      }
+                            return(
+                              <div key={blockKey}>
+                                <h4>{block.label}</h4>
+                                {(block.tasks && 
+                                  Object.keys(block.tasks).map(taskKey => {
+                                    var task = block.tasks[taskKey];
 
-                      return(
-                        <li key={taskKey} className={classState} onClick={this.toggleTask.bind(this, blockKey, taskKey)}>
-                          <i className={classIcon}></i> <span>{task.label}</span>
-                        </li>
-                        //  <li className="after"><i className="fa fa-star-o"></i> <span>Ballon</span></li>
-                      );
-                  })}
-                  {forceCloseDOM}
-                </ul>
-                ;
+                                    return(
+                                      <Task key={taskKey} uid={childKey} dateString={dateKey} blockKey={blockKey} taskKey={taskKey} task={task} />
+                                    )
+                                  })
+                                )}
+                              </div>
+                            )
+                          })
+                        )}
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            );
+          })
 
-                return (
-                  <div key={blockKey} data-blockkey={blockKey} className="block">
-                    <h3>{block.label} [{doneCount}/{taskCount}] </h3>
-                    {tasksListDOM}
-                  </div>
-                );
-              })
-            }
-
-          </div>
-          
+          }
         </div>
       </div>
     );

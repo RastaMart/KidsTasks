@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Task from '../../components/Task';
 //import * as firebase from 'firebase';
 
 import _const from '../../const';
@@ -30,7 +31,7 @@ class List extends Component {
     this.toDayListRef = this.listsRef.child(this.state.dateString);
 
     this.toDayListRef.on('value', snap => {
-
+      console.log('toDayListRef value change');
       this.setState({
         loading: false,
         lists: snap.val()
@@ -68,20 +69,20 @@ class List extends Component {
     this.toDayListRef.off();
   }
 
-  toggleTask(blockKey, taskKey) {
+  // toggleTask(blockKey, taskKey) {
 
-    let task = this.state.lists.data.blocks[blockKey].tasks[taskKey];
-    let newTask = Object.assign({}, task);
-    if(typeof(task.state)==='undefined' || task.state === 'todo') {
-      newTask.state = 'done';
-    } else {
-      newTask.state = 'todo';
-    }
+  //   let task = this.state.lists.data.blocks[blockKey].tasks[taskKey];
+  //   let newTask = Object.assign({}, task);
+  //   if(typeof(task.state)==='undefined' || task.state === 'todo') {
+  //     newTask.state = 'done';
+  //   } else {
+  //     newTask.state = 'todo';
+  //   }
 
-    var updates = {};
-    updates[taskKey] = newTask;
-    this.toDayListRef.child('data').child('blocks').child(blockKey).child('tasks').update(updates);
-  }
+  //   var updates = {};
+  //   updates[taskKey] = newTask;
+  //   this.toDayListRef.child('data').child('blocks').child(blockKey).child('tasks').update(updates);
+  // }
   forceOpenBlock(blockKey, wantItOpen) {
     let block = this.state.lists.data.blocks[blockKey];
     let newBlock = Object.assign({}, block);
@@ -136,22 +137,13 @@ class List extends Component {
                       <button onClick={this.forceOpenBlock.bind(this, blockKey, true)}>...</button>
                     </div> : 
                     <ul>
+
                     {(block.tasks != null) && 
                       Object.keys(block.tasks).map((taskKey, index) => {
                         let task = block.tasks[taskKey];
 
-                        let classState = "";
-                        let classIcon = "fa fa-square-o";
-                        if(task.state === 'done') {
-                          classState = 'done';
-                          classIcon = "fa fa-check-square-o";
-                        }
-
                         return(
-                          <li key={taskKey} className={classState} onClick={this.toggleTask.bind(this, blockKey, taskKey)}>
-                            <i className={classIcon}></i> <span>{task.label}</span>
-                          </li>
-                          //  <li className="after"><i className="fa fa-star-o"></i> <span>Ballon</span></li>
+                          <Task key={taskKey} uid={this.uid} dateString={this.state.dateString} blockKey={blockKey} taskKey={taskKey} task={task} />
                         );
                     })}
                     {forceCloseDOM}

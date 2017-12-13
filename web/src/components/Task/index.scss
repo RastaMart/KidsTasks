@@ -1,0 +1,21 @@
+li.task {
+    margin:0;
+    padding:10px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    font-size: 18px;
+
+    &.done {
+        color:rgba(0,0,0,0.3);
+
+        span {
+            text-decoration: line-through;
+        }
+    }
+    &.after {
+        color:rgba(0,0,0,0.3);
+
+        span {
+            
+        }
+    }
+}

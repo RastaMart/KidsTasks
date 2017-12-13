@@ -19,7 +19,7 @@ import firebaseui from 'firebaseui';
 
     // FirebaseUI config.
       var uiConfig = {
-        signInSuccessUrl: config.domain + '/list',
+        signInSuccessUrl: config.domain + '/LoginSuccess',
         signInOptions: [
           // Leave the lines as is for the providers you want to offer your users.
           firebase.auth.GoogleAuthProvider.PROVIDER_ID,

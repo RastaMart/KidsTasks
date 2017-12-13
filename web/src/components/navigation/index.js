@@ -14,7 +14,17 @@ class Navigation extends Component {
             <div id="navigation">
                 
                     {
-                        (!this.props.user) ? '' : 
+                        (!this.props.user || !this.props.user.familyMemberType) ? 
+                        
+                        <ul id='menu'>
+                            <li>
+                                <Link to='/profil'>
+                                    <i className="fa fa-user" aria-hidden="true"></i>
+                                    <span>Profil</span>
+                                </Link>
+                            </li>
+                        </ul>
+                        : 
 
                         (this.props.user.familyMemberType === 'parent') ? 
                         <ul id='menu'>
