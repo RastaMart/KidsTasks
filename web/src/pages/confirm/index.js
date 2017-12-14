@@ -31,6 +31,7 @@ class Confirm extends Component {
     this.childsRef = this.dbRef.child('famillies').child(this.famillyId ).child('childs');
     this.usersRef = {};
     this.childsListsRef = {};
+    this.childsListsArchivesRef = {};
     
     this.childsRef.on('value', childsSnap => {
       var famillies = childsSnap.val();
@@ -62,6 +63,23 @@ class Confirm extends Component {
     //TODO unmount
   }
 
+  confirmDay(childKey, confirmDateKey) {
+    let _data = {};
+    _data[confirmDateKey] = this.state.childsLists[childKey][confirmDateKey];
+    console.log('_data', _data);
+
+    this.childsListsArchivesRef[childKey] = this.dbRef.child('lists_archives').child(childKey);
+    this.childsListsArchivesRef[childKey].update(_data, (err)=>{
+      console.log('done copy data to archives');
+      if(!err) {
+        _data[confirmDateKey] = null;
+        this.childsListsRef[childKey].update(_data, (err2)=>{
+          console.log('done removing day list');
+        });
+      }
+    });
+  }
+
   render() {
     return (
       <div id="confirm">
@@ -76,42 +94,49 @@ class Confirm extends Component {
             return(
               <div key={childKey}>
                 <h2>{child.fullName}</h2>
-                <p>{child.pictUrl}</p>
+                {/* <p>{child.pictUrl}</p> */}
                 
-                {(this.state.childsLists[childKey] && 
+                {(!this.state.childsLists[childKey]) ? 
+                <div className="confirmDone">Toutes les listes sont confirmées</div>
+                :  
                   Object.keys(this.state.childsLists[childKey]).map(dateKey => {
                     var theDate = new Date(this.state.childsLists[childKey][dateKey].str_date);
                     var data = this.state.childsLists[childKey][dateKey].data;
 
+                    let doneCount = Object.keys(data.blocks).reduce((total, blockKey)=> {
+                      var taskCount = Object.keys(data.blocks[blockKey].tasks).filter((taskKey, index)=>{
+                        return data.blocks[blockKey].tasks[taskKey].state === 'done';
+                      }).length;
+                      return total + taskCount;
+                    }, 0);
+            
+                    let taskCount = Object.keys(data.blocks).reduce((total, blockKey)=> {
+                      var taskCount = Object.keys(data.blocks[blockKey].tasks).length;
+                      return total + taskCount;
+                    }, 0);
+
+                    let pts = doneCount * 5;
+                    if(doneCount === taskCount) {
+                      pts += 10;
+                    }
+
                     return(
                       <div key={dateKey}>
-                        <h2>{theDate.toLocaleDateString('fr-CA', this.displayDateOptions)}</h2>
+                        <h3>{theDate.toLocaleDateString('fr-CA', this.displayDateOptions)}</h3>
                         {(data.blocks && 
                           Object.keys(data.blocks).map(blockKey => {
                             var block = data.blocks[blockKey];
 
                             return (<Block key={blockKey} uid={childKey} dateString={dateKey} blockKey={blockKey} block={block} />);
-                            // return(
-                            //   <div key={blockKey} className="block">
-                            //     <h4>{block.label}</h4>
-                            //     <ul>
-                            //       {(block.tasks && 
-                            //         Object.keys(block.tasks).map(taskKey => {
-                            //           var task = block.tasks[taskKey];
-
-                            //           return(
-                            //             <Task key={taskKey} uid={childKey} dateString={dateKey} blockKey={blockKey} taskKey={taskKey} task={task} />
-                            //           )
-                            //         })
-                            //       )}
-                            //     </ul>
-                            //   </div>
-                            // )
                           })
                         )}
+                        <div className="daySummary">
+                          <h3>{theDate.toLocaleDateString('fr-CA', this.displayDateOptions)} [{doneCount}/{taskCount}] >> {pts} pts </h3>
+                          <button onClick={this.confirmDay.bind(this, childKey, dateKey)}>Confirm</button>
+                        </div>
                       </div>
                     );
-                  })
+                  }
                 )}
               </div>
             );

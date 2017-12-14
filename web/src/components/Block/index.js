@@ -78,7 +78,7 @@ class Block extends Component {
 
         return (
             <div key={this.props.blockKey} data-blockkey={this.props.blockKey} className="block">
-                <h3>{this.state.block.label} [{doneCount}/{taskCount}] </h3>
+                <h4>{this.state.block.label} [{doneCount}/{taskCount}] </h4>
                 {tasksListDOM}
             </div>
         );

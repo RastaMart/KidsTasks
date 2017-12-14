@@ -6,11 +6,33 @@
         right: 0;
         top: 58px;
         overflow: auto;
+        max-width: 600px;
+        margin:0 auto;
 
+
+        .confirmDone {
+            font-size: 0.9em;
+            padding: 5px 10px;
+        }
         h2{
-            font-size: 14px;
+            font-size: 1.1em;
             text-align: center;
         }
+        h3 {    
+            font-size: 1.1em;
+            padding: 5px 10px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+        }
+        .daySummary {
+            position: relative;
+            h3 {
 
+            }
+            button {
+                position: absolute;
+                top:7px;
+                right:1em;
+            }
+        }
     }
 }
