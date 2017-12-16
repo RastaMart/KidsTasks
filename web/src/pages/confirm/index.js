@@ -32,6 +32,7 @@ class Confirm extends Component {
     this.usersRef = {};
     this.childsListsRef = {};
     this.childsListsArchivesRef = {};
+    this.childsPstRef = {};
     
     this.childsRef.on('value', childsSnap => {
       var famillies = childsSnap.val();
@@ -63,15 +64,24 @@ class Confirm extends Component {
     //TODO unmount
   }
 
-  confirmDay(childKey, confirmDateKey) {
+  confirmDay(childKey, confirmDateKey, pts) {
     let _data = {};
     _data[confirmDateKey] = this.state.childsLists[childKey][confirmDateKey];
     console.log('_data', _data);
 
     this.childsListsArchivesRef[childKey] = this.dbRef.child('lists_archives').child(childKey);
+    this.childsPstRef[childKey] = this.dbRef.child('pts').child(childKey);
+
     this.childsListsArchivesRef[childKey].update(_data, (err)=>{
       console.log('done copy data to archives');
       if(!err) {
+
+        let _dataPts = {};
+        _dataPts[confirmDateKey] = pts;
+        this.childsPstRef[childKey].update(_dataPts, (err2)=>{
+          console.log('done assign pts');
+        });
+
         _data[confirmDateKey] = null;
         this.childsListsRef[childKey].update(_data, (err2)=>{
           console.log('done removing day list');
@@ -79,6 +89,7 @@ class Confirm extends Component {
       }
     });
   }
+
 
   render() {
     return (
@@ -132,7 +143,7 @@ class Confirm extends Component {
                         )}
                         <div className="daySummary">
                           <h3>{theDate.toLocaleDateString('fr-CA', this.displayDateOptions)} [{doneCount}/{taskCount}] >> {pts} pts </h3>
-                          <button onClick={this.confirmDay.bind(this, childKey, dateKey)}>Confirm</button>
+                          <button onClick={this.confirmDay.bind(this, childKey, dateKey, pts)}>Confirm</button>
                         </div>
                       </div>
                     );

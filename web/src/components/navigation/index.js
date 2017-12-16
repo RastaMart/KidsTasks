@@ -50,6 +50,12 @@ class Navigation extends Component {
                         :
                         <ul id='menu'>
                             <li>
+                                <Link to='/pts'>
+                                    <i className="fa fa-diamond"></i>
+                                    <span>Points</span>
+                                </Link>
+                            </li>
+                            <li>
                                 <Link to='/list'>
                                     <i className="fa fa-list-ul"></i>
                                     <span>Listes</span>

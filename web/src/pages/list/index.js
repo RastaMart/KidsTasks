@@ -34,11 +34,24 @@ class List extends Component {
     this.toDayListRef.on('value', snap => {
       this.setState({
         loading: false,
-        lists: snap.val()
+        lists: snap.val(),
+        dayIsClose:false
       });
 
       if(this.state.lists==null) {
-        this.createTheDayLists();
+
+        _const.fbDb.ref().child('lists_archives').child(this.uid).child(this.state.dateString).once('value', snapListArchives => {
+          console.log('snapListArchives', snapListArchives.val());
+          if(!snapListArchives.val()) {
+            this.createTheDayLists();
+          } else {
+            this.setState({
+              dayIsClose:true
+            });
+          }
+        })
+
+        
       } 
     });
 
@@ -94,9 +107,11 @@ class List extends Component {
         <div className="content">
           <h2>{this.state.theDate.toLocaleDateString('fr-CA', this.displayDateOptions)}</h2>
           {
-            dayDone ? 
-              this.dayDoneComp()
-            :
+            
+            this.state.dayIsClose ? this.renderDayClose() :
+            
+            dayDone ? this.renderDayDone() :
+
             <div className="dayList">
 
               {(this.state.lists != null) && (this.state.lists.data != null) && (this.state.lists.data.blocks != null) &&
@@ -113,12 +128,21 @@ class List extends Component {
       </div>
     );
   }
-  dayDoneComp() {
+  renderDayClose() {
     return (
     <div>
       <div style={{width:'100%', height:'200px', position:'relative'}}>
-        <iframe title="Journée complétée" src="https://giphy.com/embed/UHAUeUTVwpUWY" width="100%" height="100%" style={{position:'absolute', zindex:50}} frameBorder="0" className="giphy-embed" allowFullScreen></iframe>
-        <div style={{position:'absolute',width:'100%', height:'100%', top:'50%', textAlign:'center', color:'#FFF', fontSize:'24px', textShadow: '1px 1px 2px black',zindez:99}}>Journée complétée</div>
+        <div style={{width:'100%',height:0,paddingBottom:'143%',position:'relative'}}><iframe src="https://giphy.com/embed/xmW8F2ksN0KA0" width="100%" height="100%" style={{position:'absolute'}} frameBorder="0" class="giphy-embed" title="Journée confirmée" allowFullScreen></iframe></div>
+        <div style={{position:'absolute',width:'90%', height:'100%', top:'50%', left:'5%', textAlign:'center', color:'#FFF', fontSize:'24px', textShadow: '1px 1px 2px black',zindez:99}}>Ta journée a été confirmé par un parent. Reviens demain.</div>
+      </div>
+    </div>);
+  }
+  renderDayDone() {
+    return (
+    <div>
+      <div style={{width:'100%', height:'200px', position:'relative'}}>
+        <div style={{width:'100%',height:0,paddingBottom:'143%',position:'relative'}}><iframe src="https://giphy.com/embed/l1J3pT7PfLgSRMnFC" width="100%" height="100%" style={{position:'absolute'}} frameBorder="0" class="giphy-embed" title="Journée complétée" allowFullScreen></iframe></div>
+        <div style={{position:'absolute',width:'90%', height:'100%', top:'50%', left:'5%', textAlign:'center', color:'#FFF', fontSize:'24px', textShadow: '1px 1px 2px black',zindez:99}}>Journée complétée</div>
       </div>
     </div>);
   }
