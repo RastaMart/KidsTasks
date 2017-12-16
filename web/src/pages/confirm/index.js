@@ -70,15 +70,24 @@ class Confirm extends Component {
     console.log('_data', _data);
 
     this.childsListsArchivesRef[childKey] = this.dbRef.child('lists_archives').child(childKey);
-    this.childsPstRef[childKey] = this.dbRef.child('pts').child(childKey);
+
+    let dateArray = this.dateKeyToDateArray(confirmDateKey);
+    let simpleDate = {
+      year:dateArray[0],
+      month:dateArray[1],
+      day:dateArray[2]
+    }
+    console.log('simpleDate', simpleDate);
+    let _path = "pts/" + childKey + "/" + simpleDate.year + "/" + simpleDate.month + "/" + simpleDate.day;
+    console.log('_path', _path);
+
+    this.childsPstRef[childKey] = _const.fbDb.ref(_path);
 
     this.childsListsArchivesRef[childKey].update(_data, (err)=>{
       console.log('done copy data to archives');
       if(!err) {
 
-        let _dataPts = {};
-        _dataPts[confirmDateKey] = pts;
-        this.childsPstRef[childKey].update(_dataPts, (err2)=>{
+        this.childsPstRef[childKey].update({add:pts}, (err2) => {
           console.log('done assign pts');
         });
 
@@ -90,6 +99,38 @@ class Confirm extends Component {
     });
   }
 
+  // getDateRef(ref, dateKey) {
+  //   let dateArr = dateKeyToDateArray(dateKey);
+  //   return new Promise((resolve, reject) => {
+  //     ref.child(dateArr[0]).once('value', snap=> {
+  //       if(snap.value === null) {
+  //         ref.
+  //       }
+  //     });
+  //   });
+  // }
+
+  dateKeyToDatePath(dateKey) {
+    if(dateKey.length !== 8) {
+      throw new Error("dateKey need to be in yyyymmdd format : " + dateKey);
+    }
+    return dateKey.slice(0,4) + "/" + dateKey.slice(4,6) + "/" + dateKey.slice(6,8);
+  }
+  dateKeyToDateArray(dateKey) {
+    if(dateKey.length !== 8) {
+      throw new Error("dateKey need to be in yyyymmdd format : " + dateKey);
+    }
+    return this.dateKeyToDatePath(dateKey).split('/');
+  }
+  setToDrillObject(obj, arr, value) {
+    let _obj = Object.assign({}, obj);
+    if(arr.length === 1) {
+      _obj[arr[0]] = value;
+    } else {
+      _obj[arr[0]] = this.setToDrillObject(_obj, arr.slice(1), value);
+    }
+    return _obj;
+  }
 
   render() {
     return (

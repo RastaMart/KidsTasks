@@ -12,13 +12,13 @@ class Pts extends Component {
     this.uid = this.props.fbUser.uid;
     this.famillyId = this.props.user.famillies[0];
 
-    this.displayDateOptions = {weekday: "long", month: "long", day: "numeric"};
+    //this.displayDateOptions = {weekday: "long", month: "long", day: "numeric"};
     //let _theDate = new Date(2017,10,1);
     let _theDate = new Date();
     this.state = {
       theDate : _theDate,
-      dateString : _theDate.getFullYear() + "" + ("00"+(_theDate.getMonth()+1)).slice(-2) + "" + ("00"+_theDate.getDate()).slice(-2),
-      ptsDetails:[],
+      //dateString : _theDate.getFullYear() + "" + ("00"+(_theDate.getMonth()+1)).slice(-2) + "" + ("00"+_theDate.getDate()).slice(-2),
+      ptsDetails:{},
       ptsTotal:0
     };
 
@@ -31,19 +31,36 @@ class Pts extends Component {
 
     this.ptsRef.on('value', snapPts => {
       console.log('snapPts', snapPts.val());
-      this.setState({ptsDetails : snapPts.val()}, ()=> {
-        this.countPts();
-      });
+      if(snapPts.val()) {
+        this.setState({ptsDetails : snapPts.val()}, ()=> {
+          this.countPts();
+        });
+      }
       
     });
 
   }
   countPts() {
-    let _total = Object.keys(this.state.ptsDetails).reduce((total, dayKey) => {
-      let _day = this.state.ptsDetails[dayKey];
-      return total+_day;
+    let _total = Object.keys(this.state.ptsDetails).reduce((total, yearKey) => {
+      
+      let _year = this.state.ptsDetails[yearKey];
+      console.log('_year', _year);
+
+      let _totalYears = Object.keys(_year).reduce((yearTotal, monthKey) => {
+        let _month = _year[monthKey];
+        console.log('_month', _month);
+  
+        let _totalMonths = Object.keys(_month).reduce((monthTotal, dayKey) => {
+          let _day = _month[dayKey];
+          console.log('_day', _day);
+
+          return monthTotal += _day.add;
+        }, 0);
+        return yearTotal += _totalMonths;
+      }, 0);
+
+      return total + _totalYears;
     }, 0);
-    console.log('_total', _total);
     this.setState({ptsTotal:_total});
   }
 
