@@ -35,6 +35,12 @@ class Navigation extends Component {
                                 </Link>
                             </li>
                             <li>
+                                <Link to='/pts'>
+                                    <i className="fa fa-diamond"></i>
+                                    <span>Points</span>
+                                </Link>
+                            </li>
+                            <li>
                                 <Link to='/templates'>
                                 <i className="fa fa-list-ul"></i>
                                     <span>Modèles</span>

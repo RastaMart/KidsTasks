@@ -66,13 +66,10 @@ class AppRouter extends Component {
   }
 
   updateProfilePict(profilePictUrl) {
-    console.log('profilePictUrl', profilePictUrl);
     var img = new Image(),
     canvas = document.createElement("canvas"),
     ctx = canvas.getContext("2d");
 
-    console.log('canvas', canvas);
-    console.log('canvas.toBlob', canvas.toBlob);
 
     if(!canvas.toBlob) {// pas supporter sur ipad Nathan
       return;
