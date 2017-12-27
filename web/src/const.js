@@ -13,7 +13,8 @@ import firebaseui from 'firebaseui';
       messagingSenderId: "419939611097",
       //domain:'http://localhost:3000',
       //domain:'http://192.168.0.114:3000',
-      domain:'https://192.168.0.114:3000',
+      //domain:'https://192.168.0.114:3000',
+      domain:'https://taches.rancourt.me',
     };
     firebase.initializeApp(config);
 
