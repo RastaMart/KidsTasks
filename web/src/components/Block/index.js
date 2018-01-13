@@ -56,11 +56,11 @@ class Block extends Component {
 
         let taskCount = Object.keys(this.state.block.tasks).length;
         
-        let forceCloseDOM = (this.state.block.forceOpen) ? <li><button onClick={this.forceOpenBlock.bind(this, false)}>... Cacher ce block</button></li> : "";
+        let forceCloseDOM = (this.props.ui === 'child' && this.state.block.forceOpen) ? <li><button onClick={this.forceOpenBlock.bind(this, false)}>Cacher</button></li> : "";
 
-        let tasksListDOM = (doneCount===taskCount && !this.state.block.forceOpen) ? 
+        let tasksListDOM = (this.props.ui === 'child' && doneCount===taskCount && !this.state.block.forceOpen) ? 
             <div>
-                <button onClick={this.forceOpenBlock.bind(this, true)}>...</button>
+                <button onClick={this.forceOpenBlock.bind(this, true)}>Revoir</button>
             </div> 
         : 
             <ul>
@@ -77,8 +77,12 @@ class Block extends Component {
         ;
 
         return (
-            <div key={this.props.blockKey} data-blockkey={this.props.blockKey} className="block">
-                <h4>{this.state.block.label} [{doneCount}/{taskCount}] </h4>
+            <div key={this.props.blockKey} data-blockkey={this.props.blockKey} className={'block' + (doneCount===taskCount?' completed':'')}>
+                <h4>
+                    {this.state.block.label} 
+                    {/* [{doneCount}/{taskCount}]  */}
+                    <i className="fa fa-check-circle"></i>
+                </h4>
                 {tasksListDOM}
             </div>
         );

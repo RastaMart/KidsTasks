@@ -184,7 +184,7 @@ class Confirm extends Component {
                             Object.keys(data.blocks).map(blockKey => {
                               var block = data.blocks[blockKey];
 
-                              return (<Block key={blockKey} uid={childKey} dateString={dateKey} blockKey={blockKey} block={block} />);
+                              return (<Block key={blockKey} ui="parent" uid={childKey} dateString={dateKey} blockKey={blockKey} block={block} />);
                             })
                           )}
                         </div>

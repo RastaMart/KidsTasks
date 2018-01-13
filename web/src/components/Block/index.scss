@@ -7,6 +7,16 @@
         border-bottom: 1px solid rgba(0,0,0,0.2);
         font-weight: bold;
     }
+    h4 i {
+        display: none;
+    }
+    &.completed {
+        h4 i {
+            display: inline-block;
+            margin-left:5px;
+            color: green;
+        }
+    }
     ul {
         list-style: none;
         margin:0;

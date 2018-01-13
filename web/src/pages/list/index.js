@@ -118,7 +118,7 @@ class List extends Component {
                 Object.keys(this.state.lists.data.blocks).map((blockKey, index) => {
                   let block = this.state.lists.data.blocks[blockKey];
 
-                  return (<Block key={blockKey} uid={this.uid} dateString={this.state.dateString} blockKey={blockKey} block={block} />);
+                  return (<Block key={blockKey} ui="child" uid={this.uid} dateString={this.state.dateString} blockKey={blockKey} block={block} />);
                 })
               }
 
