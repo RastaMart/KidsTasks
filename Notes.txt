@@ -1,0 +1,8 @@
+
+Pour debug
+$HTTPS=true npm start
+
+Pour publish
+$yarn build
+$firebase deploy
+
