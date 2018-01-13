@@ -173,18 +173,20 @@ class Confirm extends Component {
                     }
 
                     return(
-                      <div key={dateKey}>
-                        <h3>{theDate.toLocaleDateString('fr-CA', this.displayDateOptions)}</h3>
-                        {(data.blocks && 
-                          Object.keys(data.blocks).map(blockKey => {
-                            var block = data.blocks[blockKey];
+                      <div key={dateKey} className="childContent">
+                        {/* <h3>{theDate.toLocaleDateString('fr-CA', this.displayDateOptions)}</h3> */}
+                        <div className="dayContent">
+                          <div className="daySummary">
+                            <h3>{theDate.toLocaleDateString('fr-CA', this.displayDateOptions)} [{doneCount}/{taskCount}] >> {pts} pts </h3>
+                            <button onClick={this.confirmDay.bind(this, childKey, dateKey, pts)}>Confirm</button>
+                          </div>
+                          {(data.blocks && 
+                            Object.keys(data.blocks).map(blockKey => {
+                              var block = data.blocks[blockKey];
 
-                            return (<Block key={blockKey} uid={childKey} dateString={dateKey} blockKey={blockKey} block={block} />);
-                          })
-                        )}
-                        <div className="daySummary">
-                          <h3>{theDate.toLocaleDateString('fr-CA', this.displayDateOptions)} [{doneCount}/{taskCount}] >> {pts} pts </h3>
-                          <button onClick={this.confirmDay.bind(this, childKey, dateKey, pts)}>Confirm</button>
+                              return (<Block key={blockKey} uid={childKey} dateString={dateKey} blockKey={blockKey} block={block} />);
+                            })
+                          )}
                         </div>
                       </div>
                     );

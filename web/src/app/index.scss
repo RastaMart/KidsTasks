@@ -35,7 +35,18 @@ body {
       margin:0;
     }
     button {
+      padding:0.3em 0.7em;
       border:1px solid #707070;
+      background: #d4d4d4;
+      color:#000;
+      font-weight: bold;
+      text-transform: uppercase;
+      //box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.5);
+
+      &:hover {
+        cursor: pointer;
+      }
+      
     }
   }
 }

@@ -14,7 +14,7 @@ import firebaseui from 'firebaseui';
       //domain:'http://localhost:3000',
       //domain:'http://192.168.0.114:3000',
       //domain:'https://192.168.0.114:3000',
-      domain:'https://taches.rancourt.me',
+      domain:document.location.protocol+'//'+document.location.hostname+(document.location.port ? ':'+document.location.port: '')
     };
     firebase.initializeApp(config);
 
