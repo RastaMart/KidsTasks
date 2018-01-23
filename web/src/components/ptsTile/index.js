@@ -72,7 +72,10 @@ class PtsTile extends Component {
 
   render() {
     return (
-          <div className="ptsTotal">{this.state.ptsTotal}</div>
+      <div>
+        <div className="ptsTotal">{this.state.ptsTotal}</div>
+        
+      </div>
     );
   }
 }

@@ -41,4 +41,5 @@ export default {
     fbDb: firebase.database(),
     fbUi : new firebaseui.auth.AuthUI(firebase.auth()),
     fbUiConfig : uiConfig,
+    dayOfWeek : ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi']
 };

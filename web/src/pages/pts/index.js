@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import PtsTile from '../../components/pts';
+import PtsTile from '../../components/ptsTile';
+import PtsArchives from '../../components/ptsArchives';
  import _const from '../../const';
 
 import './index.css';
@@ -13,17 +14,19 @@ class Pts extends Component {
     this.famillyId = this.props.user.famillies[0];
     
     this.theDate = new Date();
-    this.year = this.theDate.getFullYear();
-    this.month = this.theDate.getMonth() + 1;
-    this.date = this.theDate.getDate();
+    this.year = this.pad( this.theDate.getFullYear(), 4);
+    this.month = this.pad( this.theDate.getMonth() + 1, 2);
+    this.date = this.pad( this.theDate.getDate(), 2);
 
     this.state = {
-      childs:[]
+      childs:{}
     };
 
 
   }
-
+  pad(num, nbr) {
+    return ("00000000"+num).slice(-nbr);
+  }
   componentDidMount() {
     if(this.props.user.familyMemberType === "parent") {
       
@@ -59,7 +62,7 @@ class Pts extends Component {
             _pts[this.year][this.month][this.date] = _pts[this.year][this.month][this.date] || {};
             _pts[this.year][this.month][this.date].remove = _pts[this.year][this.month][this.date].remove || 0;
             _childs[userSnap.key].pts = _pts;
-
+            
             this.setState({
               childs:_childs
             });
@@ -107,12 +110,12 @@ class Pts extends Component {
           {(this.props.user.familyMemberType === 'child') ? 
             <div className="childBlock">
               <PtsTile uid={this.uid} />
+              <PtsArchives uid={this.uid} />
             </div>
             :
             <div>
               {Object.keys(this.state.childs).map(childKey => {
                 let child = this.state.childs[childKey];
-                
                 if(child.pts==null) { return(<div key={childKey}>Chargement...</div>); }
 
                 return(
