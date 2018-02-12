@@ -155,30 +155,46 @@ class Confirm extends Component {
                     var theDate = new Date(this.state.childsLists[childKey][dateKey].str_date);
                     var data = this.state.childsLists[childKey][dateKey].data;
 
-                    let doneCount = Object.keys(data.blocks).reduce((total, blockKey)=> {
-                      var taskCount = Object.keys(data.blocks[blockKey].tasks).filter((taskKey, index)=>{
-                        return data.blocks[blockKey].tasks[taskKey].state === 'done';
-                      }).length;
-                      return total + taskCount;
+                    // let doneCount = Object.keys(data.blocks).reduce((total, blockKey)=> {
+                    //   var taskCount = Object.keys(data.blocks[blockKey].tasks).filter((taskKey, index)=>{
+                    //     return data.blocks[blockKey].tasks[taskKey].state === 'done';
+                    //   }).length;
+                    //   return total + taskCount;
+                    // }, 0);
+
+                    let pts = Object.keys(data.blocks).reduce((total, blockKey)=> {
+                      let blockPts = Object.keys(data.blocks[blockKey].tasks).reduce((blockTotal, taskKey, index)=>{
+                        if( data.blocks[blockKey].tasks[taskKey].state === 'done' ) {
+                          let taskPts = data.blocks[blockKey].tasks[taskKey].pts || 0;
+                           return blockTotal + taskPts;
+                         } else {
+                            return blockTotal;
+                         }
+                      }, 0);
+
+                      return total + blockPts;
                     }, 0);
             
-                    let taskCount = Object.keys(data.blocks).reduce((total, blockKey)=> {
-                      var taskCount = Object.keys(data.blocks[blockKey].tasks).length;
-                      return total + taskCount;
-                    }, 0);
-
-                    let pts = doneCount * 5;
-                    if(doneCount === taskCount) {
-                      pts += 10;
-                    }
+                    // let taskCount = Object.keys(data.blocks).reduce((total, blockKey)=> {
+                    //   var taskCount = Object.keys(data.blocks[blockKey].tasks).length;
+                    //   return total + taskCount;
+                    // }, 0);
 
                     return(
                       <div key={dateKey} className="childContent">
                         {/* <h3>{theDate.toLocaleDateString('fr-CA', this.displayDateOptions)}</h3> */}
                         <div className="dayContent">
                           <div className="daySummary">
-                            <h3>{theDate.toLocaleDateString('fr-CA', this.displayDateOptions)} [{doneCount}/{taskCount}] >> {pts} pts </h3>
-                            <button onClick={this.confirmDay.bind(this, childKey, dateKey, pts)}>Confirm</button>
+                            <h3>
+                              {theDate.toLocaleDateString('fr-CA', this.displayDateOptions)} 
+                              {/* [{doneCount}/{taskCount}] >>  */}
+                              <span className="rightZone">
+                                {pts} pts 
+                                <button className="confirmBtn" onClick={this.confirmDay.bind(this, childKey, dateKey, pts)}>Confirm</button>
+                              </span>
+                              
+                            </h3>
+                            
                           </div>
                           {(data.blocks && 
                             Object.keys(data.blocks).map(blockKey => {
@@ -188,6 +204,7 @@ class Confirm extends Component {
                             })
                           )}
                         </div>
+                        {/* <button className="confirmBtn" onClick={this.confirmDay.bind(this, childKey, dateKey, pts)}>Confirm</button> */}
                       </div>
                     );
                   }

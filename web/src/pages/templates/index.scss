@@ -1,83 +1,72 @@
-#templates {    
-    .content {
-        position: absolute;
-        bottom: 46px;
-        left: 0;
-        right: 0;
-        top: 58px;
-        overflow: auto;
-        max-width: 600px;
-        margin:0 auto;
-
-        h2{
-            font-size: 14px;
-            text-align: center;
+#templates {
+    .dayList {}
+    input[type='text'] {
+        width: 100%;
+    }
+    .dayType {
+        .addItem {
+            font-size: 18px;
         }
-        .dayList {
-            
-        }
-        input[type='text'] {
-            width:250px;
-        }
-        .dayType {
-            .block {
-                h3 {
-                    position: relative;
-                    font-size: 12px;
-                    padding:5px 10px;
-                    border-bottom: 1px solid rgba(0,0,0,0.2);
-                    font-weight: bold;
-
-                    .fa-trash-o {
-                        position: absolute;
-                        right: 10px;
-                        top: 3px;
-                        font-size: 18px;
-                    }
-                }
-                ul {
-                    list-style: none;
-                    margin:0;
-                    padding:0;
-                    
-                    li {
-                        margin:0;
-                        padding:10px;
-                        border-bottom: 1px solid rgba(0,0,0,0.1);
-                        font-size: 18px;
-
-                        &.done {
-                            color:rgba(0,0,0,0.3);
-
-                            span {
-                                text-decoration: line-through;
-                            }
-                        }
-                        &.after {
-                            color:rgba(0,0,0,0.3);
-
-                            span {
-                                
-                            }
-                        }
-                        &.add {
-                            text-align: center;
-                        }
-                    }
-                }
-                .fa-minus-circle {
-                    color:red;
-                    font-size: 14px;
-                    margin-right: 5px;
-                }
-                .fa-minus-square-o {
-                    color:red;
+        .block {
+            h3 {
+                position: relative;
+                font-size: 12px;
+                padding: 5px 10px;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+                font-weight: bold;
+                .fa-trash-o {
+                    position: absolute;
+                    right: 10px;
+                    top: 3px;
                     font-size: 18px;
-                    margin-right: 5px;
+                    cursor: pointer;
                 }
-                .fa-bars {
-                    float: right;
+            }
+            ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                li {
+                    margin: 0;
+                    padding: 10px;
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                    font-size: 18px;
+                    &.done {
+                        color: rgba(0, 0, 0, 0.3);
+                        span {
+                            text-decoration: line-through;
+                        }
+                    }
+                    &.after {
+                        color: rgba(0, 0, 0, 0.3);
+                        span {}
+                    }
+                    &.add {
+                        text-align: center;
+                    }
                 }
+            }
+            .fa-minus-circle {
+                color: red;
+                font-size: 14px;
+                margin-right: 5px;
+                cursor: pointer;
+            }
+            .fa-minus-square-o {
+                color: red;
+                font-size: 18px;
+                margin-right: 5px;
+                cursor: pointer;
+            }
+
+            .ptsByTask {
+                width: 25px;
+                margin-right: 5px;
+                font-size: 18px;
+                text-align: center;
+            }
+            .fa-bars {
+                cursor: pointer;
             }
         }
     }

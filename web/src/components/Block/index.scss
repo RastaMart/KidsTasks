@@ -1,17 +1,12 @@
 .block {
     padding:0 2em;
 
-    h4 {
-        font-size: 1em;
-        padding:5px 0;
-        border-bottom: 1px solid rgba(0,0,0,0.2);
-        font-weight: bold;
-    }
-    h4 i {
+
+    h3 i.fa-check-circle {
         display: none;
     }
     &.completed {
-        h4 i {
+        h3 i.fa-check-circle {
             display: inline-block;
             margin-left:5px;
             color: green;

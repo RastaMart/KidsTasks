@@ -47,6 +47,7 @@ class Templates extends Component {
           }
         }
       }
+
     });
 
     let addDayTypeLabel = document.getElementById('addDayTypeLabel');
@@ -99,10 +100,26 @@ class Templates extends Component {
       let blockKey = el.getAttribute('data-blockkey');
 
       this.templatesRef.child(dayTypeKey).child('blocks').child(blockKey).child('tasks').push({
-        label:el.value
+        label:el.value,
+        pts:5
       });
       el.value = '';
     }
+  }
+
+
+  ptsChange(dayTypeKey, blockKey, taskKey, event) {
+     var _pts = event.target.value;
+    
+     var _templates = this.state.templates;
+     _templates[dayTypeKey].blocks[blockKey].tasks[taskKey].pts = _pts;
+     this.setState({
+      templates:_templates
+     });
+  }
+  savePts(dayTypeKey, blockKey, taskKey, event) {
+    var _pts = event.target.value*1;
+    this.templatesRef.child(dayTypeKey).child('blocks').child(blockKey).child('tasks').child(taskKey).update({pts:_pts});
   }
 
 
@@ -131,7 +148,7 @@ class Templates extends Component {
 
                         return (
                           <div key={blockKey} data-blockkey={blockKey} className="block">
-                            <h3><i className="fa fa-minus-circle" onClick={this.deleteBlock.bind(this, dayTypeKey, blockKey)}></i> {block.label}</h3>
+                            <h3><i className="fa fa-minus-square-o" onClick={this.deleteBlock.bind(this, dayTypeKey, blockKey)}></i> {block.label}</h3>
                             <ul>
                               {(block.tasks!=null) &&
                                 Object.keys(block.tasks).map((taskKey, index) => {
@@ -141,7 +158,10 @@ class Templates extends Component {
                                     <li key={taskKey}>
                                       <i className="fa fa-minus-square-o" onClick={this.deleteTask.bind(this, dayTypeKey, blockKey, taskKey)}></i> 
                                       <span>{task.label}</span>
-                                      <i className="fa fa-bars"></i> 
+                                      <div className="rightZone">
+                                        <input type="text" className="ptsByTask" value={task.pts} onChange={this.ptsChange.bind(this, dayTypeKey, blockKey, taskKey )} onBlur={this.savePts.bind(this, dayTypeKey, blockKey, taskKey )} />
+                                        <i className="fa fa-bars"></i> 
+                                      </div>
                                     </li>
                                   )
                                 })
@@ -149,8 +169,8 @@ class Templates extends Component {
                               
 
                               <li className="done">
-                                <i className="fa fa-plus"></i> 
-                                <input type="text" placeholder="ajouter une tâche" className="addTaskLabel" data-daytypekey={dayTypeKey} data-blockkey={blockKey} />
+                                {/* <i className="fa fa-plus"></i>  */}
+                                <input type="text" placeholder="+ ajouter une tâche" className="addItem addTaskLabel" data-daytypekey={dayTypeKey} data-blockkey={blockKey} />
                               </li>
                             </ul>
                           </div>
@@ -159,8 +179,8 @@ class Templates extends Component {
                     }
                     <div className="addBlock">
                       <h3>
-                        <i className="fa fa-plus"></i> 
-                        <input type="text" placeholder="ajouter un bloc" className="addBlockLabel" data-daytypekey={dayTypeKey} /></h3>
+                        {/* <i className="fa fa-plus"></i>  */}
+                        <input type="text" placeholder="+ ajouter un bloc" className="addItem addBlockLabel" data-daytypekey={dayTypeKey} /></h3>
                     </div>
                   </div>
                 </div>
@@ -169,8 +189,8 @@ class Templates extends Component {
           }
           <div id="addDayType">
             <h3>
-              <i className="fa fa-plus"></i> 
-              <input type="text" placeholder="ajouter un type de journée" id="addDayTypeLabel" /></h3>
+              {/* <i className="fa fa-plus"></i>  */}
+              <input type="text" placeholder="+ ajouter un type de journée" className="addItem" id="addDayTypeLabel" /></h3>
           </div>
         </div>
       </div>

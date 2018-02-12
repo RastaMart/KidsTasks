@@ -55,7 +55,16 @@ class Block extends Component {
         }).length;
 
         let taskCount = Object.keys(this.state.block.tasks).length;
-        
+     
+        let blockPts = Object.keys(this.state.block.tasks).reduce((blockTotal, taskKey, index)=>{
+            if( this.state.block.tasks[taskKey].state === 'done' ) {
+                let taskPts = this.state.block.tasks[taskKey].pts || 0;
+                return blockTotal + taskPts;
+            } else {
+                return blockTotal;
+            }
+        }, 0);
+
         let forceCloseDOM = (this.props.ui === 'child' && this.state.block.forceOpen) ? <li><button onClick={this.forceOpenBlock.bind(this, false)}>Cacher</button></li> : "";
 
         let tasksListDOM = (this.props.ui === 'child' && doneCount===taskCount && !this.state.block.forceOpen) ? 
@@ -78,11 +87,14 @@ class Block extends Component {
 
         return (
             <div key={this.props.blockKey} data-blockkey={this.props.blockKey} className={'block' + (doneCount===taskCount?' completed':'')}>
-                <h4>
-                    {this.state.block.label} 
-                    {/* [{doneCount}/{taskCount}]  */}
+                <h3>
+                    {this.state.block.label} {" "}
+                    {/* [{doneCount}/{taskCount}] {" "} */}
                     <i className="fa fa-check-circle"></i>
-                </h4>
+                    <span className="rightZone">
+                        {blockPts} pts
+                    </span>
+                </h3>
                 {tasksListDOM}
             </div>
         );

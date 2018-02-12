@@ -40,7 +40,7 @@ class Task extends Component {
         let _classState = "task";
         let _classIcon = "fa fa-square-o";
         if(task.state === 'done') {
-          _classState += ' done';
+          _classState += ' completed';
           _classIcon = "fa fa-check-square-o";
         }
         this.setState({
@@ -69,7 +69,14 @@ class Task extends Component {
     render() {
         return (
             <li className={this.state.classState} onClick={this.toggleTask.bind(this)}>
-                <i className={this.state.classIcon}></i> <span>{this.state.task.label}</span>
+                <i className={this.state.classIcon}></i> 
+                <span>{this.state.task.label}</span>
+                <div className="rightZone">
+                    <div className="taskPts">
+                        {this.state.task.pts} pts
+                        <i className="fa fa-check-circle"></i>
+                    </div>
+                </div>
             </li>
             //  <li className="after"><i className="fa fa-star-o"></i> <span>Ballon</span></li>
                         

@@ -5,11 +5,30 @@ li.task {
     font-size: 01em;
     cursor: pointer;
 
-    &.done {
+    i {
+        margin-right: 0.5em;
+    }
+    .taskPts {
+        color:rgba(0, 0, 0, 0.3);
+
+        .fa-check-circle {
+            display: none;
+        }
+    }
+    &.completed {
         color:rgba(0,0,0,0.3);
 
         span {
             text-decoration: line-through;
+        }
+        .taskPts {
+            color:#000;
+
+            .fa-check-circle {
+                display: inline-block;
+                margin-left: 0.5em;
+                color: green;
+            }
         }
     }
     &.after {
