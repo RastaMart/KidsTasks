@@ -1,34 +1,38 @@
-#confirm {  
-    h2{
-        text-align: left;
-    }
+#confirm {
     .confirmDone {
         font-size: 0.9em;
         padding: 5px 10px;
     }
     .childContent {
-        padding:0 0 0 2em;
-        h3 {    
-            font-size: 1em;
-            padding: 10px 1px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-            margin-bottom: 0;
-        }
+        padding: 0 2em;
         .dayContent {
             //border-top: 1px solid rgba(0, 0, 0, 0.3);
             //border-left: 1px solid rgba(0, 0, 0, 0.3);
+
+            h3 {
+                cursor: pointer;
+                i {
+                    margin-right: 0.5em;
+                }
+            }
 
             h4 {
                 font-size: 0.8em;
                 margin: 10px 0 0 0;
             }
+            .block {
+                padding:0 0 0 2em;
+
+                .rightZone {
+                    font-size: 0.8em;
+                }
+            }
             ul {
                 li.task {
                     display: inline-block;
-                    border:none;
+                    border: none;
                     font-size: 0.8em;
-                    padding:0 15px 0 0;
-
+                    padding: 0 15px 0 0;
                     i {
                         display: none;
                     }
@@ -41,13 +45,10 @@
                 margin-left: 0.5em;
             }
         }
-    }
-    .daySummary {
-        position: relative;
-        h3 {
-
+        &.confirmed {
+            color:rgba(0,0,0,0.3);
         }
-    }
+    } 
     // .confirmBtn {
     //     display: block;
     //     width: 100%;

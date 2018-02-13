@@ -167,53 +167,52 @@ class Profil extends Component {
               :
               <div>
                 {this.render_familyState()}
-                
-                {
-                  (this.state.user.pictUrl!=null)
-                  ?<img className='profilPict' src={this.state.user.pictUrl} alt={this.props.fbUser.displayName} />
-                  :<img className='profilPict' src="/img/default_profile.png" alt={this.props.fbUser.displayName} />
-                }
-                <h2>{this.props.fbUser.displayName}</h2>
-                
-                {/* <p>{JSON.stringify(this.props.fbUser.uid, null,4)}</p> */}
-                
-                <button id="logoutBtn" className='hide' onClick={this.logoutUser.bind(this)}>Me déconnecter</button>
+                <div className="myProfil">
+                  <h2>{this.props.fbUser.displayName}</h2>
+                  {
+                    (this.state.user.pictUrl!=null)
+                    ?<img className='profilPict' src={this.state.user.pictUrl} alt={this.props.fbUser.displayName} />
+                    :<img className='profilPict' src="/img/default_profile.png" alt={this.props.fbUser.displayName} />
+                  }
+                  
+                  {/* <p>{JSON.stringify(this.props.fbUser.uid, null,4)}</p> */}
+                  
+                  <p>
+                    <button id="logoutBtn" className='hide' onClick={this.logoutUser.bind(this)}>Me déconnecter</button>
+                  </p>
+                </div>
+                <div className="famillies">
+                <h2>Famille(s)</h2>
+                  {Object.keys(this.state.famillies).map((famillyKey)=>{
+                    let familly = this.state.famillies[famillyKey];
+                    return(
+                      <div className="familly" key={famillyKey}>
+                        <h3>
+                          {familly.label} 
+                        </h3>
 
-                <hr />
-                
-                {Object.keys(this.state.famillies).map((famillyKey)=>{
-                  let familly = this.state.famillies[famillyKey];
-                  return(
-                    <div key={famillyKey}>
-                      <h2>{familly.label}</h2>
-                      <h4>Parent(s)</h4>
-                      <div className="usersTiles">
-                        {Object.keys(familly.parents).map((userId)=>{
-                          let user = familly.parents[userId];
-                          return this.render_userTile(userId, user);
-                        })}
-                        <div className="userTile">
-                          <Link to='/addFamillyMember'>
-                            <img className='add' src="/img/plus.png" alt="Ajouter un parent à la famille" />
-                          </Link>
+                        <Link to="/addFamillyMember">
+                          <button>Ajouter un membre</button>
+                        </Link>
+                        
+                        <h4>Parent(s)</h4>
+                        <div className="usersTiles">
+                          {Object.keys(familly.parents).map((userId)=>{
+                            let user = familly.parents[userId];
+                            return this.render_userTile(userId, user);
+                          })}
+                        </div>
+                        <h4>Enfant(s)</h4>
+                        <div className="usersTiles">
+                          {Object.keys(familly.childs).map((userId)=>{
+                            let user = familly.childs[userId];
+                            return this.render_userTile(userId, user);
+                          })}
                         </div>
                       </div>
-                      <h4>Enfant(s)</h4>
-                      <div className="usersTiles">
-                        {Object.keys(familly.childs).map((userId)=>{
-                          let user = familly.childs[userId];
-                          return this.render_userTile(userId, user);
-                        })}
-                        <div className="userTile">
-                          <Link to='/addFamillyMember'>
-                            <img className='add' src="/img/plus.png" alt="Ajouter un enfant à la famille" />
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-
+                    );
+                  })}
+                </div>
               </div>
           }
         </div>

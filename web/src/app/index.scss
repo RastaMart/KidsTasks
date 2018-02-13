@@ -24,19 +24,19 @@ body {
   #app {
     display: block;
   }
-  #navigation {}
   #app {
     flex: 1;
-    
-    .content {
-      position: absolute;
-      bottom: 46px;
+    .header {
+      position: fixed;
+      top:0;
       left: 0;
-      right: 0;
-      top: 58px;
+      width: 100%;
+      background: #FFF;
+    }
+    .content {
       overflow: auto;
       max-width: 600px;
-      margin: 0 auto;
+      margin: 58px auto 46px;
     }
   }
 }

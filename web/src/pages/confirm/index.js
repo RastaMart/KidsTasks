@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Block from '../../components/Block';
+import ContextualisedDate from '../../components/ContextualisedDate';
 //import * as firebase from 'firebase';
 
 import _const from '../../const';
@@ -18,7 +19,8 @@ class Confirm extends Component {
     //let _theDate = new Date();
     this.state = {
       childs:{},
-      childsLists:{}
+      childsLists:{},
+      childsListsArchives:{}
       //theDate : _theDate,
       //dateString : _theDate.getFullYear() + "" + ("00"+(_theDate.getMonth()+1)).slice(-2) + "" + ("00"+_theDate.getDate()).slice(-2)
     };
@@ -40,6 +42,7 @@ class Confirm extends Component {
 
         this.usersRef[userKey] = this.dbRef.child('users').child(userKey);
         this.childsListsRef[userKey] = this.dbRef.child('lists').child(userKey);
+        this.childsListsArchivesRef[userKey] = this.dbRef.child('lists_archives').child(userKey);
 
 
         this.usersRef[userKey].on('value', userSnap => {
@@ -57,6 +60,13 @@ class Confirm extends Component {
             childsLists:_childsLists
           });
         });
+        this.childsListsArchivesRef[userKey].limitToLast(10).on('value', childsListsSnap => {
+          var _childsListsArchives = this.state.childsListsArchives;
+          _childsListsArchives[childsListsSnap.key] = childsListsSnap.val();
+          this.setState({
+            childsListsArchives:_childsListsArchives
+          });
+        });
       }
     });
   }
@@ -68,8 +78,6 @@ class Confirm extends Component {
     let _data = {};
     _data[confirmDateKey] = this.state.childsLists[childKey][confirmDateKey];
     console.log('_data', _data);
-
-    this.childsListsArchivesRef[childKey] = this.dbRef.child('lists_archives').child(childKey);
 
     let dateArray = this.dateKeyToDateArray(confirmDateKey);
     let simpleDate = {
@@ -98,17 +106,48 @@ class Confirm extends Component {
       }
     });
   }
+  unConfirmDay(childKey, confirmDateKey) {
+    let _data = {};
+    _data[confirmDateKey] = this.state.childsListsArchives[childKey][confirmDateKey];
+    console.log('unConfirmDay _data', JSON.stringify(_data[confirmDateKey]));
 
-  // getDateRef(ref, dateKey) {
-  //   let dateArr = dateKeyToDateArray(dateKey);
-  //   return new Promise((resolve, reject) => {
-  //     ref.child(dateArr[0]).once('value', snap=> {
-  //       if(snap.value === null) {
-  //         ref.
-  //       }
-  //     });
-  //   });
-  // }
+    let dateArray = this.dateKeyToDateArray(confirmDateKey);
+    let simpleDate = {
+      year:dateArray[0],
+      month:dateArray[1],
+      day:dateArray[2]
+    }
+    console.log('simpleDate', simpleDate);
+    let _path = "pts/" + childKey + "/" + simpleDate.year + "/" + simpleDate.month + "/" + simpleDate.day;
+    console.log('_path', _path);
+
+    this.childsPstRef[childKey] = _const.fbDb.ref(_path);
+        
+    Object.keys(_data[confirmDateKey].data.blocks).forEach(blockKey => {
+      var block = _data[confirmDateKey].data.blocks[blockKey];
+      Object.keys(block.tasks).forEach(taskKey => {
+        var task = block.tasks[taskKey];
+        if(task.pts === undefined) {
+          task.pts = 5;
+        }
+      });
+    });
+
+    this.childsListsRef[childKey].update(_data, (err)=>{
+      console.log('done copy data to active');
+      if(!err) {
+
+        this.childsPstRef[childKey].update({add:0}, (err2) => {
+          console.log('done removing pts');
+        });
+
+        _data[confirmDateKey] = null;
+        this.childsListsArchivesRef[childKey].update(_data, (err2)=>{
+          console.log('done removing archives day list');
+        });
+      }
+    });
+  }
 
   dateKeyToDatePath(dateKey) {
     if(dateKey.length !== 8) {
@@ -151,16 +190,9 @@ class Confirm extends Component {
                 {(!this.state.childsLists[childKey]) ? 
                 <div className="confirmDone">Toutes les listes sont confirmées</div>
                 :  
-                  Object.keys(this.state.childsLists[childKey]).map(dateKey => {
+                  Object.keys(this.state.childsLists[childKey]).reverse().map(dateKey => {
                     var theDate = new Date(this.state.childsLists[childKey][dateKey].str_date);
                     var data = this.state.childsLists[childKey][dateKey].data;
-
-                    // let doneCount = Object.keys(data.blocks).reduce((total, blockKey)=> {
-                    //   var taskCount = Object.keys(data.blocks[blockKey].tasks).filter((taskKey, index)=>{
-                    //     return data.blocks[blockKey].tasks[taskKey].state === 'done';
-                    //   }).length;
-                    //   return total + taskCount;
-                    // }, 0);
 
                     let pts = Object.keys(data.blocks).reduce((total, blockKey)=> {
                       let blockPts = Object.keys(data.blocks[blockKey].tasks).reduce((blockTotal, taskKey, index)=>{
@@ -174,28 +206,17 @@ class Confirm extends Component {
 
                       return total + blockPts;
                     }, 0);
-            
-                    // let taskCount = Object.keys(data.blocks).reduce((total, blockKey)=> {
-                    //   var taskCount = Object.keys(data.blocks[blockKey].tasks).length;
-                    //   return total + taskCount;
-                    // }, 0);
 
                     return(
                       <div key={dateKey} className="childContent">
-                        {/* <h3>{theDate.toLocaleDateString('fr-CA', this.displayDateOptions)}</h3> */}
                         <div className="dayContent">
-                          <div className="daySummary">
-                            <h3>
-                              {theDate.toLocaleDateString('fr-CA', this.displayDateOptions)} 
-                              {/* [{doneCount}/{taskCount}] >>  */}
-                              <span className="rightZone">
-                                {pts} pts 
-                                <button className="confirmBtn" onClick={this.confirmDay.bind(this, childKey, dateKey, pts)}>Confirm</button>
-                              </span>
-                              
-                            </h3>
-                            
-                          </div>
+                          <h3 onClick={this.confirmDay.bind(this, childKey, dateKey, pts)}>
+                            <i className="fa fa-square-o"></i> 
+                            <ContextualisedDate date={theDate} />
+                            <span className="rightZone">
+                              {pts} pts 
+                            </span>
+                          </h3>
                           {(data.blocks && 
                             Object.keys(data.blocks).map(blockKey => {
                               var block = data.blocks[blockKey];
@@ -204,7 +225,42 @@ class Confirm extends Component {
                             })
                           )}
                         </div>
-                        {/* <button className="confirmBtn" onClick={this.confirmDay.bind(this, childKey, dateKey, pts)}>Confirm</button> */}
+                      </div>
+                    );
+                  }
+                )}
+
+                {(!this.state.childsListsArchives[childKey]) ? 
+                <div></div>
+                :  
+                  Object.keys(this.state.childsListsArchives[childKey]).reverse().map(dateKey => {
+                    var theDate = new Date(this.state.childsListsArchives[childKey][dateKey].str_date);
+                    var data = this.state.childsListsArchives[childKey][dateKey].data;
+
+                    let pts = Object.keys(data.blocks).reduce((total, blockKey)=> {
+                      let blockPts = Object.keys(data.blocks[blockKey].tasks).reduce((blockTotal, taskKey, index)=>{
+                        if( data.blocks[blockKey].tasks[taskKey].state === 'done' ) {
+                          let taskPts = data.blocks[blockKey].tasks[taskKey].pts || 0;
+                           return blockTotal + taskPts;
+                         } else {
+                            return blockTotal;
+                         }
+                      }, 0);
+
+                      return total + blockPts;
+                    }, 0);
+
+                    return(
+                      <div key={dateKey} className="childContent confirmed">
+                        <div className="dayContent">
+                          <h3 onClick={this.unConfirmDay.bind(this, childKey, dateKey, pts)}>
+                            <i className="fa fa-check-square-o"></i> 
+                            <ContextualisedDate date={theDate} />
+                            <span className="rightZone">
+                              {pts} pts 
+                            </span>
+                          </h3>
+                        </div>
                       </div>
                     );
                   }

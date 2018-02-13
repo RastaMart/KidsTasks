@@ -1,5 +1,4 @@
 #templates {
-    .dayList {}
     input[type='text'] {
         width: 100%;
     }
@@ -9,8 +8,6 @@
         }
         .block {
             h3 {
-                position: relative;
-                font-size: 12px;
                 padding: 5px 10px;
                 border-bottom: 1px solid rgba(0, 0, 0, 0.2);
                 font-weight: bold;

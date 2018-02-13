@@ -1,42 +1,41 @@
 #profil {
-    .content {
-        position: absolute;
-        bottom: 46px;
-        left: 0;
-        right: 0;
-        top: 58px;
-        overflow: auto;
+    text-align: center;
 
-        text-align: center;
-
-        .profilPict {
-            width:100px;
-            height:100px;
-            margin:40px auto 0;
-            border: 1px solid rgba(0, 0, 0, 0.288);
-            border-radius: 100%;
+    .myProfil {
+        margin-top:40px;
+    }
+    .famillies {
+        margin-top:40px;
+        .familly {
+            margin:0 2em;
         }
-        h4 {
-            clear: both;
-        }
-        .usersTiles {
-            display: flex;
+    }
 
-            .userTile {
-                flex-grow: 1;
-                flex-basis: 0;
-                max-width: 50%;
-                text-align: center;
-                .name {
-                    // text-align: center;
-                }
-                .add {
-                    width:50%;
-                    margin-top:10%;
-                    border: 1px solid rgba(0, 0, 0, 0.288);
-                    border-radius: 100%;
-                    
-                }
+    .profilPict {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto;
+        border: 1px solid rgba(0, 0, 0, 0.288);
+        border-radius: 100%;
+    }
+    h3 {
+        a {
+            display: block;
+        }
+    }
+    h4 {
+        clear: both;
+    }
+    .usersTiles {
+        display: flex;
+        justify-content: center;
+        .userTile {
+            flex-grow: 1;
+            flex-basis: 0;
+            max-width: 33%;
+            text-align: center;
+            .name {
+                // text-align: center;
             }
         }
     }

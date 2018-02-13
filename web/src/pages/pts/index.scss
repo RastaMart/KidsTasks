@@ -1,57 +1,44 @@
-#pts {    
-    .content {
-        position: absolute;
-        bottom: 46px;
-        left: 0;
-        right: 0;
-        top: 58px;
-        overflow: auto;
-        max-width: 600px;
-        margin:0 auto;
-
-        .childBlock {
-            margin:40px 0;
-
-            h2{
-                font-size: 1.1em;
-                text-align: center;
+#pts {
+    .childBlock {
+        margin: 40px 0;
+        h2 {
+            font-size: 1.1em;
+            text-align: center;
+        }
+        .userRow {
+            clear: both;
+            padding: 0 2em;
+            .leftPts,
+            .rightPts {
+                width: 102px;
+                margin-top: 20px;
             }
-            .userRow {
-                clear: both;    
-                padding: 0 2em;
-
-                .leftPts, .rightPts {
-                    width: 102px;
-                    margin-top:20px;
+            .leftPts {
+                float: left;
+            }
+            .middle {
+                height: 121px;
+                margin: 0 52px;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.288);
+                text-align: center;
+                h3 {
+                    font-size: 0.9em;
                 }
-                .leftPts {
-                    float:left;
-                }
-                .middle {
-                    height: 121px;
-                    margin:0 52px;
-                    border-bottom:1px solid rgba(0, 0, 0, 0.288);
+                input {
+                    font-size: 1em;
+                    display: block;
+                    width: 100px;
+                    margin: 0 auto;
                     text-align: center;
-
-                    h3 {
-                        font-size: 0.9em;
-                    }
-                    input {
-                        font-size: 1em;
-                        display: block;
-                        width: 100px;
-                        margin:0 auto;
-                        text-align: center;
-                    }
-                    button {
-                        width:40px;
-                        height:40px;
-                        margin: 10px;
-                    }
                 }
-                .rightPts {
-                    float:right;
+                button {
+                    width: 40px;
+                    height: 40px;
+                    margin: 10px;
                 }
+            }
+            .rightPts {
+                float: right;
             }
         }
     }
