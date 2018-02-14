@@ -11,13 +11,33 @@ class ContextualisedDate extends Component {
         let theDateRounded = new Date(theDate.setHours(0,0,0,0));
         let dateString = this.props.date.toLocaleDateString('fr-CA');
 
-        let today = new Date(new Date().setHours(0,0,0,0));
-        let yeasterday = new Date(new Date().setDate(new Date().getDate()-1)).setHours(0,0,0,0);
-        let weekAgo = new Date(new Date().setDate(new Date().getDate()-7)).setHours(0,0,0,0);
+        let today = new Date(
+            new Date().setHours(0,0,0,0)
+        );
+        let yesterday = new Date(
+            new Date(
+                new Date().setDate(
+                    new Date().getDate()-1
+                )
+            )
+            .setHours(0,0,0,0)
+        );
+        let weekAgo = new Date(
+            new Date(
+                new Date().setDate(
+                    new Date().getDate()-7
+                )
+            )
+            .setHours(0,0,0,0)
+        );
         
+        console.log('today', today);
+        console.log('yesterday', yesterday);
+        console.log('weekAgo',weekAgo);
+
         if(theDateRounded.toString() === today.toString()) {
             dateString = "aujourd'hui";
-        } else if(theDateRounded.toString() === yeasterday.toString()) {
+        } else if(theDateRounded.toString() === yesterday.toString()) {
             dateString = "hier";
         }
         else if(theDateRounded - weekAgo > 0) {
