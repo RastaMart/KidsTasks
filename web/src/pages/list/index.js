@@ -16,7 +16,6 @@ class List extends Component {
     this.famillyId = this.props.user.famillies[0];
 
     this.displayDateOptions = {weekday: "long", month: "long", day: "numeric"};
-    //let _theDate = new Date(2017,10,1);
     let _theDate = new Date();
     this.state = {
       theDate : _theDate,

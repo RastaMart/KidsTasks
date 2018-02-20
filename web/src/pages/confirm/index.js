@@ -18,6 +18,7 @@ class Confirm extends Component {
     //this.displayDateOptions = {weekday: "long", month: "long", day: "numeric"};
     //let _theDate = new Date();
     this.state = {
+      showArchives:false,
       childs:{},
       childsLists:{},
       childsListsArchives:{}
@@ -45,6 +46,7 @@ class Confirm extends Component {
         this.childsListsArchivesRef[userKey] = this.dbRef.child('lists_archives').child(userKey);
 
 
+
         this.usersRef[userKey].on('value', userSnap => {
           var _childs = this.state.childs;
           _childs[userSnap.key] = userSnap.val();
@@ -60,13 +62,6 @@ class Confirm extends Component {
             childsLists:_childsLists
           });
         });
-        this.childsListsArchivesRef[userKey].limitToLast(10).on('value', childsListsSnap => {
-          var _childsListsArchives = this.state.childsListsArchives;
-          _childsListsArchives[childsListsSnap.key] = childsListsSnap.val();
-          this.setState({
-            childsListsArchives:_childsListsArchives
-          });
-        });
       }
     });
   }
@@ -74,10 +69,31 @@ class Confirm extends Component {
     //TODO unmount
   }
 
+  loadArchives(userKey) {
+    if(this.state.showArchives && this.state.childsListsArchives[userKey] === undefined) {
+      
+      //this.childsListsArchivesRef[userKey].limitToLast(10).on('value', childsListsSnap => {
+      this.childsListsArchivesRef[userKey].on('value', childsListsSnap => {
+        var _childsListsArchives = this.state.childsListsArchives;
+        _childsListsArchives[childsListsSnap.key] = childsListsSnap.val();
+        this.setState({
+          childsListsArchives:_childsListsArchives
+        });
+      });
+    }
+  }
+
+  toogleArchivesDay(userKey) {
+    this.setState({
+      showArchives : !this.state.showArchives
+    }, () => {
+      this.loadArchives(userKey);
+    })
+  }
+
   confirmDay(childKey, confirmDateKey, pts) {
     let _data = {};
     _data[confirmDateKey] = this.state.childsLists[childKey][confirmDateKey];
-    console.log('_data', _data);
 
     let dateArray = this.dateKeyToDateArray(confirmDateKey);
     let simpleDate = {
@@ -85,23 +101,18 @@ class Confirm extends Component {
       month:dateArray[1],
       day:dateArray[2]
     }
-    console.log('simpleDate', simpleDate);
     let _path = "pts/" + childKey + "/" + simpleDate.year + "/" + simpleDate.month + "/" + simpleDate.day;
-    console.log('_path', _path);
 
     this.childsPstRef[childKey] = _const.fbDb.ref(_path);
 
     this.childsListsArchivesRef[childKey].update(_data, (err)=>{
-      console.log('done copy data to archives');
       if(!err) {
 
         this.childsPstRef[childKey].update({add:pts}, (err2) => {
-          console.log('done assign pts');
         });
 
         _data[confirmDateKey] = null;
         this.childsListsRef[childKey].update(_data, (err2)=>{
-          console.log('done removing day list');
         });
       }
     });
@@ -230,10 +241,24 @@ class Confirm extends Component {
                   }
                 )}
 
-                {(!this.state.childsListsArchives[childKey]) ? 
-                <div></div>
-                :  
-                  Object.keys(this.state.childsListsArchives[childKey]).reverse().map(dateKey => {
+                <div className="childContent">
+                  <h3 onClick={this.toogleArchivesDay.bind(this, childKey)}>
+                    {(!this.state.showArchives) ? 
+                      <i className="fa fa-caret-right"></i>
+                    :
+                      <i className="fa fa-sort-down"></i> 
+                    }
+                    <span>Journées archivées</span>
+                  </h3>
+                </div>
+
+                {
+                  (!this.state.showArchives) ? 
+                    <div className="childContent"></div>
+                  :
+                  (!this.state.childsListsArchives[childKey]) ? 
+                    <div className="childContent">Chargement</div>
+                  : Object.keys(this.state.childsListsArchives[childKey]).reverse().map(dateKey => {
                     var theDate = new Date(this.state.childsListsArchives[childKey][dateKey].str_date);
                     var data = this.state.childsListsArchives[childKey][dateKey].data;
 

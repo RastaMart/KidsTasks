@@ -19,21 +19,15 @@ class ContextualisedDate extends Component {
                 new Date().setDate(
                     new Date().getDate()-1
                 )
-            )
-            .setHours(0,0,0,0)
+            ).setHours(0,0,0,0)
         );
         let weekAgo = new Date(
             new Date(
                 new Date().setDate(
                     new Date().getDate()-7
                 )
-            )
-            .setHours(0,0,0,0)
+            ).setHours(0,0,0,0)
         );
-        
-        console.log('today', today);
-        console.log('yesterday', yesterday);
-        console.log('weekAgo',weekAgo);
 
         if(theDateRounded.toString() === today.toString()) {
             dateString = "aujourd'hui";
