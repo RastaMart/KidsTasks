@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PtsTile from '../../components/ptsTile';
-import PtsArchives from '../../components/ptsArchives';
+import PtsHistory from '../../components/ptsHistory';
  import _const from '../../const';
 
 import './index.css';
@@ -110,7 +110,7 @@ class Pts extends Component {
           {(this.props.user.familyMemberType === 'child') ? 
             <div className="childBlock">
               <PtsTile uid={this.uid} />
-              <PtsArchives uid={this.uid} />
+              <PtsHistory uid={this.uid} />
             </div>
             :
             <div>
@@ -130,7 +130,7 @@ class Pts extends Component {
                         <PtsTile uid={childKey} />
                       </div>
                       <div className="middle">
-                        <h3>La date</h3>
+                        <p>La date</p>
                         <input type="tel" value={child.pts[this.year][this.month][this.date].remove} onChange={this.ptsChange.bind(this, childKey )} onBlur={this.savePts.bind(this, childKey )} />
                         <button onClick={this.ptsRemove.bind(this, childKey)}>-</button>
                         <button onClick={this.ptsAdd.bind(this, childKey)}>+</button>

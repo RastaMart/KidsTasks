@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 //import Task from '../../components/Task';
 import Block from '../../components/Block';
+import ContextualisedDate from '../../components/ContextualisedDate';
 //import * as firebase from 'firebase';
+import DateUtil from '../../utils/dateUtil';
 
 import _const from '../../const';
 
@@ -16,10 +18,12 @@ class List extends Component {
     this.famillyId = this.props.user.famillies[0];
 
     this.displayDateOptions = {weekday: "long", month: "long", day: "numeric"};
-    let _theDate = new Date();
+    
+    this.toDayDate = new Date();
+    this.toDayDateString = DateUtil.toDateKey( this.toDayDate );
+
     this.state = {
-      theDate : _theDate,
-      dateString : _theDate.getFullYear() + "" + ("00"+(_theDate.getMonth()+1)).slice(-2) + "" + ("00"+_theDate.getDate()).slice(-2)
+      activeLists : null
     };
 
 
@@ -28,31 +32,42 @@ class List extends Component {
   componentDidMount() {
 
     this.listsRef = _const.fbDb.ref().child('lists').child(this.uid);
-    this.toDayListRef = this.listsRef.child(this.state.dateString);
 
-    this.toDayListRef.on('value', snap => {
+    this.listsRef.on('value', snap => {
+      console.log('snap.val()', snap.val());
       this.setState({
-        loading: false,
-        lists: snap.val(),
-        dayIsClose:false
+        activeLists : snap.val()
       });
+    });
 
-      if(this.state.lists==null) {
 
-        _const.fbDb.ref().child('lists_archives').child(this.uid).child(this.state.dateString).once('value', snapListArchives => {
-          console.log('snapListArchives', snapListArchives.val());
-          if(!snapListArchives.val()) {
-            this.createTheDayLists();
-          } else {
-            this.setState({
-              dayIsClose:true
-            });
-          }
-        })
+
+
+    // this.toDayListRef = this.listsRef.child(this.state.dateString);
+
+    // this.toDayListRef.on('value', snap => {
+    //   this.setState({
+    //     loading: false,
+    //     lists: snap.val(),
+    //     dayIsClose:false
+    //   });
+
+    //   if(this.state.lists==null) {
+
+    //     _const.fbDb.ref().child('lists_archives').child(this.uid).child(this.state.dateString).once('value', snapListArchives => {
+    //       console.log('snapListArchives', snapListArchives.val());
+    //       if(!snapListArchives.val()) {
+    //         this.createTheDayLists();
+    //       } else {
+    //         this.setState({
+    //           dayIsClose:true
+    //         });
+    //       }
+    //     })
 
         
-      } 
-    });
+    //   } 
+    // });
 
   }
 
@@ -78,15 +93,47 @@ class List extends Component {
 
   componentWillUnmount() {
     this.listsRef.off();
-    this.toDayListRef.off();
   }
 
 
   render() {
+    return (
+      <div id="list">
+        <div className="header">
+          <h1>Listes</h1>
+        </div>
+        <div className="content">
+          
+          {(this.state.activeLists===null) ? 
+            <div>Chargement</div>
+            :
+            <div>
+              {Object.keys(this.state.activeLists).reverse().map((dayKey) => {
+                let day = this.state.activeLists[dayKey];
+
+
+                return (
+                  <div key={dayKey}>
+                    {this.renderDay(day)}
+                  </div>
+                );
+              })}
+            </div>
+          }
+
+        </div>
+      </div>
+    );
+  }
+  renderDay(day) {
+    console.log('renderDay', day);
+    let _theDate = new Date(day.str_date);
+    let _dateString = DateUtil.toDateKey(_theDate);
+
     let dayDone = false;
-    if(this.state.lists!=null && this.state.lists.data!=null &&
-      Object.keys(this.state.lists.data.blocks).filter((blockKey) => {
-        let block = this.state.lists.data.blocks[blockKey];
+    if(day!=null && day.data!=null &&
+      Object.keys(day.data.blocks).filter((blockKey) => {
+        let block = day.data.blocks[blockKey];
 
         let doneCount = Object.keys(block.tasks).filter(tKey=>{
           return block.tasks[tKey].state === 'done';
@@ -99,31 +146,27 @@ class List extends Component {
     }
 
     return (
-      <div id="list">
-        <div className="header">
-          <h1>Listes</h1>
-        </div>
-        <div className="content">
-          <h2>{this.state.theDate.toLocaleDateString('fr-CA', this.displayDateOptions)}</h2>
-          {
-            
-            this.state.dayIsClose ? this.renderDayClose() :
-            
-            dayDone ? this.renderDayDone() :
+      <div>
+        {/* <h2>{_theDate.toLocaleDateString('fr-CA', this.displayDateOptions)}</h2> */}
+        <h2><ContextualisedDate date={_theDate} /></h2>
+        {
+          
+          this.state.dayIsClose ? this.renderDayClose() :
+          
+          dayDone ? this.renderDayDone() :
 
-            <div className="dayList">
+          <div className="dayList">
 
-              {(this.state.lists != null) && (this.state.lists.data != null) && (this.state.lists.data.blocks != null) &&
-                Object.keys(this.state.lists.data.blocks).map((blockKey, index) => {
-                  let block = this.state.lists.data.blocks[blockKey];
+            {(day != null) && (day.data != null) && (day.data.blocks != null) &&
+              Object.keys(day.data.blocks).map((blockKey, index) => {
+                let block = day.data.blocks[blockKey];
 
-                  return (<Block key={blockKey} ui="child" uid={this.uid} dateString={this.state.dateString} blockKey={blockKey} block={block} />);
-                })
-              }
+                return (<Block key={blockKey} ui="child" uid={this.uid} dateString={_dateString} blockKey={blockKey} block={block} />);
+              })
+            }
 
-            </div>
-          }
-        </div>
+          </div>
+        }
       </div>
     );
   }

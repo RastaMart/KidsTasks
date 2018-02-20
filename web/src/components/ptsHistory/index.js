@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import ContextualisedDate from '../ContextualisedDate';
 import _const from '../../const';
 
 import './index.css';
@@ -43,32 +43,33 @@ class PtsArchives extends Component {
 
   render() {
     return (
-      <div className="ptsArchives">
-        <h2>Archives</h2>
+      <div className="ptsHistory">
+        <h2>Historique</h2>
         {Object.keys(this.state.ptsDetails).sort().reverse().map((yearKey)=> {
           let year = this.state.ptsDetails[yearKey];
-          console.log('year', year);
           return (
             <div className="year" key={yearKey}>
               {Object.keys(year).sort().reverse().map((monthKey) => {
                 let month = year[monthKey];
-                console.log('month', month);
                 return (
                   <div className="month" key={monthKey}>
-                    <h3>{yearKey} / {monthKey}</h3>
+                    {/* <h3>{yearKey} / {monthKey}</h3> */}
+                    <h3>{new Date(yearKey, monthKey-1, 1).toLocaleDateString('fr-CA', {year:"numeric", month: "long"})}</h3>
                     <div>
                       {Object.keys(month).sort().reverse().map((dateKey) => {
                         let date = month[dateKey];
-                        console.log('date', date);
                         return (
                           <div class="date" key={dateKey}>
-                            <p>
-                              {_const.dayOfWeek[ new Date(yearKey, monthKey-1, dateKey).getDay()]}
-                              {" "}
-                              {dateKey} 
-                              {" "}
-                              {date.add?date.add:0} -{date.remove?date.remove:0} = {(date.add?date.add:0)-(date.remove?date.remove:0)}
-                            </p>
+                            
+                            <ContextualisedDate date={new Date(yearKey, monthKey-1, dateKey)} />
+
+                            <span className="rightZone">
+                              {/* <span className="earn">{date.add?date.add:0} pts</span>
+                              <span className="spent">{date.remove?date.remove:0} pts</span> */}
+                              <span className="earn">+ {date.add?date.add:0}</span>
+                              <span className="spent">- {date.remove?date.remove:0}</span>
+                              <span className="total">{(date.add?date.add:0)-(date.remove?date.remove:0)} pts</span>
+                            </span>
                           </div>
                         );
                       })}

@@ -9,7 +9,7 @@ class ContextualisedDate extends Component {
 
         let theDate = this.props.date;
         let theDateRounded = new Date(theDate.setHours(0,0,0,0));
-        let dateString = this.props.date.toLocaleDateString('fr-CA');
+        let dateString = "";//this.props.date.toLocaleDateString('fr-CA');
 
         let today = new Date(
             new Date().setHours(0,0,0,0)
@@ -30,17 +30,21 @@ class ContextualisedDate extends Component {
         );
 
         if(theDateRounded.toString() === today.toString()) {
-            dateString = "aujourd'hui";
+            dateString = "aujourd'hui " + theDate.toLocaleDateString('fr-CA', {month: "long", day: "numeric"});
         } else if(theDateRounded.toString() === yesterday.toString()) {
-            dateString = "hier";
+            dateString = "hier " + theDate.toLocaleDateString('fr-CA', {month: "long", day: "numeric"});
         }
         else if(theDateRounded - weekAgo > 0) {
-            dateString = _const.dayOfWeek[ theDateRounded.getDay()];
+            dateString = _const.dayOfWeek[ theDateRounded.getDay()] + " " + this.props.date.toLocaleDateString('fr-CA', {month: "long", day: "numeric"});
+        } else {
+            dateString = theDate.toLocaleDateString('fr-CA', {month: "long", day: "numeric"});
         }
-
+        if(theDate.getFullYear() !== today.getFullYear()) {
+            dateString += " " + theDate.getFullYear();
+        }
         this.state = {
             date:this.props.date,
-            dateString:dateString
+            dateString:dateString + " "
         }
         
     }
@@ -51,7 +55,7 @@ class ContextualisedDate extends Component {
     render() {
         return (
             <span>
-                {this.state.dateString} 
+                {this.state.dateString}
             </span>
         )
     }

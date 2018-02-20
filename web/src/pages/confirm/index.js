@@ -18,7 +18,7 @@ class Confirm extends Component {
     //this.displayDateOptions = {weekday: "long", month: "long", day: "numeric"};
     //let _theDate = new Date();
     this.state = {
-      showArchives:false,
+      showArchives:{},
       childs:{},
       childsLists:{},
       childsListsArchives:{}
@@ -46,12 +46,15 @@ class Confirm extends Component {
         this.childsListsArchivesRef[userKey] = this.dbRef.child('lists_archives').child(userKey);
 
 
-
+        // eslint-disable-next-line
         this.usersRef[userKey].on('value', userSnap => {
           var _childs = this.state.childs;
           _childs[userSnap.key] = userSnap.val();
+          let _showArchives = this.state.showArchives;
+          _showArchives[userKey] = false;
           this.setState({
-            childs:_childs
+            childs:_childs,
+            showArchives:_showArchives
           });
         });
 
@@ -70,7 +73,7 @@ class Confirm extends Component {
   }
 
   loadArchives(userKey) {
-    if(this.state.showArchives && this.state.childsListsArchives[userKey] === undefined) {
+    if(this.state.showArchives[userKey] && this.state.childsListsArchives[userKey] === undefined) {
       
       //this.childsListsArchivesRef[userKey].limitToLast(10).on('value', childsListsSnap => {
       this.childsListsArchivesRef[userKey].on('value', childsListsSnap => {
@@ -84,8 +87,10 @@ class Confirm extends Component {
   }
 
   toogleArchivesDay(userKey) {
+    let _showArchives = this.state.showArchives;
+    _showArchives[userKey] = !_showArchives[userKey]
     this.setState({
-      showArchives : !this.state.showArchives
+      showArchives : _showArchives
     }, () => {
       this.loadArchives(userKey);
     })
@@ -243,7 +248,7 @@ class Confirm extends Component {
 
                 <div className="childContent">
                   <h3 onClick={this.toogleArchivesDay.bind(this, childKey)}>
-                    {(!this.state.showArchives) ? 
+                    {(!this.state.showArchives[childKey]) ? 
                       <i className="fa fa-caret-right"></i>
                     :
                       <i className="fa fa-sort-down"></i> 
@@ -253,7 +258,7 @@ class Confirm extends Component {
                 </div>
 
                 {
-                  (!this.state.showArchives) ? 
+                  (!this.state.showArchives[childKey]) ? 
                     <div className="childContent"></div>
                   :
                   (!this.state.childsListsArchives[childKey]) ? 

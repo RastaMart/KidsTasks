@@ -1,0 +1,44 @@
+.ptsHistory {
+    .year {
+        margin:0 2em;
+    }
+    .ptsTotal {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto;
+        border: 1px solid rgba(0, 0, 0, 0.288);
+        border-radius: 100%;
+        text-align: center;
+        line-height: 100px;
+        font-size: 3em;
+    }
+    .date {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.288);
+        padding:0.5em 0;
+        font-size: 0.8em;
+        
+        &:after {
+            content: " ";
+            display: table;
+            clear: both;
+        }
+        
+
+        .rightZone {
+            span {
+                margin-left:1em;
+            }
+            // .earn {
+            // }
+            // .spent {
+            // }
+            .total {
+                font-weight: bold;
+                display: inline-block;
+                min-width: 3.3em;
+                text-align: right;
+            }
+
+        }
+    }
+}
