@@ -35,9 +35,19 @@ class List extends Component {
 
     this.listsRef.on('value', snap => {
       console.log('snap.val()', snap.val());
+      let activeLists = snap.val();
       this.setState({
-        activeLists : snap.val()
+        activeLists : activeLists
       });
+      
+      console.log('this.toDayDateString', this.toDayDateString);
+      if(activeLists === null || activeLists.length == 0 || activeLists[this.toDayDateString] === undefined) {
+        console.log('peut-être créer la journée en cours');
+        if(!this.ToDayIsAchive()) {
+          console.log('créer la journée en cours');
+          this.createTheDayLists();
+        }
+      }
     });
 
 
@@ -71,6 +81,20 @@ class List extends Component {
 
   }
 
+  ToDayIsAchive() {
+        _const.fbDb.ref().child('lists_archives').child(this.uid).child(this.toDayDateString).once('value', snapListArchives => {
+          console.log('today', snapListArchives.val());
+          if(!snapListArchives.val()) {
+            this.createTheDayLists();
+          }
+          //  else {
+          //   this.setState({
+          //     dayIsClose:true
+          //   });
+          // }
+        })
+  }
+
   createTheDayLists() {
 
     let templateRef = _const.fbDb.ref().child('templates/'+this.famillyId);
@@ -81,8 +105,8 @@ class List extends Component {
         let firstDayType = _templateData[firstKey];
 
         let dayList = {};
-        dayList[this.state.dateString] = {
-          str_date:this.state.theDate,
+        dayList[this.toDayDateString] = {
+          str_date:this.toDayDate,
           data:Object.assign({}, firstDayType)
         };
         this.listsRef.update(dayList);

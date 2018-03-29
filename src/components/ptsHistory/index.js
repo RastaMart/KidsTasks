@@ -59,7 +59,7 @@ class PtsArchives extends Component {
                       {Object.keys(month).sort().reverse().map((dateKey) => {
                         let date = month[dateKey];
                         return (
-                          <div class="date" key={dateKey}>
+                          <div className="date" key={dateKey}>
                             
                             <ContextualisedDate date={new Date(yearKey, monthKey-1, dateKey)} />
 
